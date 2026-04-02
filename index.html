@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LuminaBooks - Future of Reading</title>
+    <title>LuminaBooks - Mobile Ecosystem</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
         body {
             background: radial-gradient(circle at top right, #1e1b4b, #020617);
             color: #f8fafc;
@@ -16,9 +18,9 @@
         }
         .glass {
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
+            border-radius: 28px;
         }
         .gradient-text {
             background: linear-gradient(90deg, #60a5fa, #a78bfa);
@@ -27,65 +29,84 @@
         }
         .page { display: none; animation: fadeIn 0.4s ease-out; }
         .active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         
-        /* Custom UI for Mobile Navigation */
-        .nav-active { color: #60a5fa !important; }
-        .nav-active i { filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.5)); }
-
-        /* Reading Mode Styles */
-        .preview-light { background: #ffffff; color: #1a1a1a; }
-        .preview-sepia { background: #f4ecd8; color: #5b4636; }
-        .preview-dark { background: #1a1a1a; color: #e5e7eb; }
+        /* Player Progress Bar Custom Style */
+        #progress-bar {
+            appearance: none;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #progress-bar::-webkit-slider-thumb {
+            appearance: none;
+            width: 0;
+            box-shadow: -400px 0 0 400px #60a5fa;
+        }
     </style>
 </head>
-<body class="min-h-screen pb-24">
+<body class="min-h-screen pb-32">
 
-    <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto sticky top-0 z-50 bg-[#020617]/50 backdrop-blur-md">
+    <audio id="audio-player" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+
+    <nav class="flex justify-between items-center p-6 sticky top-0 z-50 bg-[#020617]/60 backdrop-blur-lg">
         <div class="text-xl font-bold flex items-center gap-2" onclick="showPage('home')">
-            <i data-lucide="book-open-check" class="text-blue-400 w-6 h-6"></i>
-            <span class="tracking-tight">Lumina<span class="text-blue-400">Books</span></span>
+            <i data-lucide="book-open-check" class="text-blue-400"></i>
+            <span>Lumina<span class="text-blue-400">Books</span></span>
         </div>
-        <div class="flex gap-3">
-            <button class="relative" onclick="alert('Δεν έχετε νέες ειδοποιήσεις')">
-                <i data-lucide="bell" class="w-6 h-6 text-gray-400"></i>
-                <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-        </div>
+        <button onclick="alert('Notification: Η συνδρομή σας λήγει σε 25 ημέρες.')" class="relative p-2 glass rounded-full">
+            <i data-lucide="bell" class="w-5 h-5 text-gray-300"></i>
+            <span class="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full"></span>
+        </button>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-5">
+    <main class="px-5 max-w-md mx-auto">
 
         <section id="home" class="page active-page">
-            <div class="py-10 text-left">
-                <h1 class="text-4xl font-extrabold leading-tight mb-4">
-                    Διάβασε το <br><span class="gradient-text">Μέλλον</span> Σήμερα.
-                </h1>
-                <p class="text-gray-400 text-base mb-8">
-                    Η μοναδική πλατφόρμα με AI περιλήψεις και Smart Audiobooks.
-                </p>
-                
-                <div class="relative flex justify-center mb-12">
-                    <div class="w-48 h-[380px] bg-gradient-to-br from-blue-500 to-purple-600 rounded-[2.5rem] border-4 border-gray-900 shadow-2xl relative overflow-hidden">
-                        <div class="p-4 pt-10 space-y-3">
-                            <div class="w-full h-24 bg-white/20 rounded-xl"></div>
-                            <div class="h-2 w-3/4 bg-white/20 rounded"></div>
-                            <div class="h-2 w-full bg-white/20 rounded"></div>
+            <div class="py-6">
+                <h1 class="text-3xl font-extrabold mb-2">Η Βιβλιοθήκη μου</h1>
+                <p class="text-gray-400 text-sm mb-8 font-light">Συνέχισε από εκεί που έμεινες</p>
+
+                <div class="glass p-6 border-blue-500/30 shadow-2xl shadow-blue-500/10">
+                    <div class="flex gap-4 mb-6">
+                        <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&w=150&q=80" 
+                             class="w-20 h-20 rounded-2xl object-cover shadow-lg" alt="Cover">
+                        <div class="flex flex-col justify-center">
+                            <h3 class="font-bold text-lg leading-tight">Digital Fortress</h3>
+                            <p class="text-blue-400 text-xs font-semibold uppercase tracking-wider">Dan Brown</p>
                         </div>
                     </div>
-                    <div class="absolute -z-10 w-56 h-56 bg-blue-500/20 blur-[80px] rounded-full"></div>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between text-[10px] text-gray-500 mb-[-10px]">
+                            <span id="current-time text-blue-400">0:00</span>
+                            <span id="duration">0:00</span>
+                        </div>
+                        <input type="range" id="progress-bar" value="0" class="w-full cursor-pointer">
+                        
+                        <div class="flex justify-center items-center gap-8 py-2">
+                            <button onclick="seek(-10)" class="text-gray-400 hover:text-white"><i data-lucide="rotate-ccw"></i></button>
+                            <button onclick="togglePlay()" id="play-btn" class="w-14 h-14 bg-white text-black rounded-full flex items-center justify-center hover:scale-105 transition active:scale-95">
+                                <i data-lucide="play" id="play-icon" class="fill-current"></i>
+                            </button>
+                            <button onclick="seek(10)" class="text-gray-400 hover:text-white"><i data-lucide="rotate-cw"></i></button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 gap-4 mb-10">
-                    <div class="glass p-6">
-                        <i data-lucide="sparkles" class="text-blue-400 mb-2 w-8 h-8"></i>
-                        <h3 class="text-xl font-bold">AI Summaries</h3>
-                        <p class="text-sm text-gray-400">Σύνοψη κεφαλαίων σε δευτερόλεπτα.</p>
+                <div class="grid grid-cols-2 gap-4 mt-8">
+                    <div class="glass p-5 flex flex-col items-center text-center" onclick="showPage('checkout')">
+                        <div class="w-10 h-10 bg-yellow-500/20 text-yellow-500 rounded-full flex items-center justify-center mb-3">
+                            <i data-lucide="zap" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-xs font-bold">Upgrade Plan</span>
                     </div>
-                    <div class="glass p-6" onclick="showPage('checkout')">
-                        <i data-lucide="zap" class="text-yellow-400 mb-2 w-8 h-8"></i>
-                        <h3 class="text-xl font-bold">Γίνε Premium</h3>
-                        <p class="text-sm text-gray-400">Ξεκλείδωσε όλα τα βιβλία τώρα.</p>
+                    <div class="glass p-5 flex flex-col items-center text-center">
+                        <div class="w-10 h-10 bg-purple-500/20 text-purple-500 rounded-full flex items-center justify-center mb-3">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-xs font-bold">Offline Files</span>
                     </div>
                 </div>
             </div>
@@ -93,103 +114,58 @@
 
         <section id="checkout" class="page">
             <div class="py-6">
-                <h2 class="text-2xl font-bold mb-6">Ολοκλήρωση Αγοράς</h2>
+                <h2 class="text-2xl font-bold mb-6">Checkout</h2>
                 
-                <div class="glass p-4 mb-6">
-                    <p class="text-sm text-gray-400 mb-3">Τύπος Παραστατικού</p>
-                    <div class="flex gap-2">
-                        <button id="btn-personal" onclick="setBilling('personal')" class="flex-1 py-2 rounded-xl bg-blue-600 text-sm font-bold transition">Personal</button>
-                        <button id="btn-business" onclick="setBilling('business')" class="flex-1 py-2 rounded-xl bg-white/5 text-sm font-bold transition">Επιχείρηση</button>
+                <div class="glass p-5 mb-6">
+                    <p class="text-xs text-gray-400 mb-4 uppercase font-bold tracking-widest">Τύπος Λογαριασμού</p>
+                    <div class="flex p-1 bg-white/5 rounded-2xl">
+                        <button id="p-btn" onclick="setBilling('personal')" class="flex-1 py-3 rounded-xl bg-blue-600 text-sm font-bold transition">Ιδιώτης</button>
+                        <button id="b-btn" onclick="setBilling('business')" class="flex-1 py-3 rounded-xl text-sm font-bold transition">Επιχείρηση</button>
                     </div>
                 </div>
 
                 <div class="glass p-6 mb-6 space-y-4">
-                    <p class="text-sm text-gray-400">Μέθοδος Πληρωμής</p>
-                    
-                    <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <i data-lucide="credit-card" class="text-blue-400"></i>
-                            <span>Visa / Mastercard</span>
-                        </div>
-                        <input type="radio" name="pay" checked class="accent-blue-500">
-                    </label>
-
-                    <label class="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <i data-lucide="send" class="text-blue-500"></i>
-                            <span>PayPal</span>
-                        </div>
-                        <input type="radio" name="pay" class="accent-blue-500">
-                    </label>
-
-                    <div class="pt-4 border-t border-white/10">
-                        <div class="flex justify-between mb-2">
-                            <span class="text-gray-400">Premium Plan</span>
-                            <span>€9.99</span>
-                        </div>
-                        <div class="flex justify-between font-bold text-xl">
-                            <span>Σύνολο</span>
-                            <span>€9.99</span>
-                        </div>
+                    <p class="text-xs text-gray-400 uppercase font-bold tracking-widest">Μέθοδος Πληρωμής</p>
+                    <div class="space-y-3">
+                        <label class="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 active:border-blue-500 transition">
+                            <div class="flex items-center gap-3"><i data-lucide="credit-card" class="text-blue-400"></i> <span class="text-sm">Visa / Mastercard</span></div>
+                            <input type="radio" name="pay" checked class="w-4 h-4 accent-blue-500">
+                        </label>
+                        <label class="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 active:border-blue-500 transition">
+                            <div class="flex items-center gap-3"><i data-lucide="layout-grid" class="text-blue-500"></i> <span class="text-sm">PayPal</span></div>
+                            <input type="radio" name="pay" class="w-4 h-4 accent-blue-500">
+                        </label>
                     </div>
                 </div>
 
-                <button onclick="fakeProcess()" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-blue-500/20 transition">
-                    Πληρωμή & Ενεργοποίηση
+                <button onclick="processFakePayment()" id="pay-master-btn" class="w-full bg-blue-600 py-5 rounded-[24px] font-bold text-lg shadow-xl shadow-blue-600/20 active:scale-95 transition">
+                    Πληρωμή €9.99
                 </button>
             </div>
         </section>
 
         <section id="wallet" class="page">
             <div class="py-6">
-                <div class="glass p-8 mb-8 bg-gradient-to-br from-blue-600/20 to-purple-600/20 text-center">
-                    <p class="text-sm text-gray-400">Το Πορτοφόλι μου</p>
-                    <h2 class="text-4xl font-bold mt-1">€45.20</h2>
+                <div class="glass p-8 mb-8 bg-gradient-to-br from-blue-600/20 to-purple-800/20 text-center border-blue-500/20">
+                    <span class="text-[10px] uppercase font-black text-blue-400 tracking-tighter">Current Balance</span>
+                    <h2 class="text-5xl font-black mt-2">€45.20</h2>
                 </div>
 
-                <h3 class="font-bold mb-4 flex items-center gap-2">
-                    <i data-lucide="history" class="w-5 h-5"></i> Ιστορικό Τιμολογίων
-                </h3>
-                
-                <div class="space-y-3">
-                    <div class="glass p-4 flex justify-between items-center" onclick="openInvoice('INV-001', '9.99')">
-                        <div>
-                            <p class="font-bold text-sm">Premium Subscription</p>
-                            <p class="text-xs text-gray-500">2 Απρ 2026 • #INV-001</p>
+                <h3 class="font-bold mb-4 px-2">Ιστορικό Συναλλαγών</h3>
+                <div class="space-y-3" id="invoice-container">
+                    <div class="glass p-4 flex justify-between items-center" onclick="showInvoice('#INV-9982', '9.99')">
+                        <div class="flex gap-4">
+                            <div class="w-10 h-10 bg-green-500/10 text-green-500 rounded-full flex items-center justify-center"><i data-lucide="check" class="w-5 h-5"></i></div>
+                            <div>
+                                <p class="font-bold text-sm leading-none mb-1">Premium Plan</p>
+                                <p class="text-[10px] text-gray-500">02 Απρ 2026 • 18:45</p>
+                            </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-green-400 font-bold text-sm">€9.99</p>
-                            <p class="text-[10px] text-blue-400 underline">PDF</p>
+                            <p class="text-sm font-bold">€9.99</p>
+                            <span class="text-[9px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded uppercase">Invoice</span>
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="account" class="page">
-            <div class="py-10 text-center">
-                <div class="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold border-4 border-white/10 shadow-xl">
-                    JD
-                </div>
-                <h2 class="text-2xl font-bold text-white">John Doe</h2>
-                <p class="text-gray-400 text-sm">Premium Member</p>
-
-                <div class="mt-10 space-y-2 text-left">
-                    <div class="glass p-4 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <i data-lucide="user" class="w-5 h-5 text-gray-400"></i>
-                            <span class="text-sm">Προσωπικά Στοιχεία</span>
-                        </div>
-                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-600"></i>
-                    </div>
-                    <div class="glass p-4 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <i data-lucide="shield-check" class="w-5 h-5 text-gray-400"></i>
-                            <span class="text-sm">Ασφάλεια</span>
-                        </div>
-                        <i data-lucide="chevron-right" class="w-4 h-4 text-gray-600"></i>
-                    </div>
-                    <button class="w-full mt-6 p-4 text-red-400 font-bold bg-red-500/5 rounded-2xl">Αποσύνδεση</button>
                 </div>
             </div>
         </section>
@@ -197,94 +173,129 @@
     </main>
 
     <div id="invoice-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="closeInvoice()"></div>
-        <div class="glass bg-white text-black p-8 w-full max-w-sm relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-bl-full"></div>
-            <h2 class="text-xl font-black mb-4">LUMINA<span class="text-blue-600">BOOKS</span></h2>
-            <div class="text-[10px] uppercase tracking-widest text-gray-500 mb-6 font-bold">Επίσημο Παραστατικό</div>
-            
-            <div class="space-y-2 text-sm border-t border-b border-gray-100 py-4 mb-4">
-                <div class="flex justify-between"><span>Αριθμός:</span><span id="inv-id" class="font-bold"></span></div>
-                <div class="flex justify-between"><span>Ημερομηνία:</span><span class="font-bold">02/04/2026</span></div>
-                <div class="flex justify-between text-blue-600"><span>Πελάτης:</span><span class="font-bold">John Doe</span></div>
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="hideInvoice()"></div>
+        <div class="glass bg-white text-black p-8 w-full max-w-sm relative">
+            <div class="flex justify-between items-start mb-8">
+                <div>
+                    <h2 class="text-2xl font-black uppercase tracking-tighter italic">Lumina<span class="text-blue-600">Books</span></h2>
+                    <p class="text-[8px] text-gray-400">Digital Content Services Ltd.</p>
+                </div>
+                <div class="text-right text-[10px] font-bold">
+                    <p id="inv-id-text">#INV-000</p>
+                    <p>02/04/2026</p>
+                </div>
             </div>
             
-            <div class="flex justify-between font-bold text-lg mb-6">
-                <span>ΣΥΝΟΛΟ</span>
-                <span id="inv-price"></span>
+            <div class="space-y-3 mb-10 text-sm">
+                <div class="flex justify-between border-b border-gray-100 pb-2 text-gray-500 italic"><span>Περιγραφή</span><span>Ποσό</span></div>
+                <div class="flex justify-between font-bold"><span>Premium Subscription</span><span id="inv-price-text">€0.00</span></div>
             </div>
-            
-            <button onclick="window.print()" class="w-full bg-black text-white py-3 rounded-xl font-bold text-sm">Λήψη PDF</button>
+
+            <div class="bg-gray-50 p-4 rounded-xl mb-6">
+                <div class="flex justify-between text-xs text-gray-400"><span>ΦΠΑ (24%)</span><span>Ενσωματωμένο</span></div>
+                <div class="flex justify-between font-black text-xl mt-1"><span>ΣΥΝΟΛΟ</span><span id="inv-total-text">€0.00</span></div>
+            </div>
+
+            <button onclick="window.print()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold">Download Receipt</button>
         </div>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 glass m-4 mb-6 p-2 flex justify-around items-center z-50 border-white/10 shadow-2xl">
-        <button onclick="showPage('home')" id="nav-home" class="p-3 text-blue-400 nav-active transition-all">
-            <i data-lucide="home"></i>
-        </button>
-        <button onclick="showPage('checkout')" id="nav-checkout" class="p-3 text-gray-400 transition-all">
-            <i data-lucide="shopping-cart"></i>
-        </button>
-        <button onclick="showPage('wallet')" id="nav-wallet" class="p-3 text-gray-400 transition-all">
-            <i data-lucide="wallet"></i>
-        </button>
-        <button onclick="showPage('account')" id="nav-account" class="p-3 text-gray-400 transition-all">
-            <i data-lucide="user"></i>
-        </button>
+    <nav class="fixed bottom-0 left-0 right-0 glass m-5 p-2 flex justify-around items-center z-[100] border-white/10 shadow-2xl">
+        <button onclick="showPage('home')" id="nav-home" class="p-4 text-blue-400 active:scale-90 transition-all"><i data-lucide="home"></i></button>
+        <button onclick="showPage('checkout')" id="nav-checkout" class="p-4 text-gray-500 active:scale-90 transition-all"><i data-lucide="shopping-cart"></i></button>
+        <button onclick="showPage('wallet')" id="nav-wallet" class="p-4 text-gray-500 active:scale-90 transition-all"><i data-lucide="wallet"></i></button>
+        <button onclick="alert('Account Settings: coming soon')" class="p-4 text-gray-500 active:scale-90 transition-all"><i data-lucide="user"></i></button>
     </nav>
 
     <script>
+        // Initialize Icons
         lucide.createIcons();
 
-        // Page Navigation
+        const audio = document.getElementById('audio-player');
+        const playBtn = document.getElementById('play-btn');
+        const playIcon = document.getElementById('play-icon');
+        const progressBar = document.getElementById('progress-bar');
+        const timeDisplay = document.querySelector('#current-time');
+        const durationDisplay = document.querySelector('#duration');
+
+        // --- NAVIGATION LOGIC ---
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById(pageId).classList.add('active-page');
             
-            // Nav Bar Highlight
-            document.querySelectorAll('nav.fixed button').forEach(btn => btn.classList.remove('nav-active', 'text-blue-400'));
-            document.getElementById('nav-' + pageId).classList.add('nav-active');
-            
-            window.scrollTo(0, 0);
+            document.querySelectorAll('nav.fixed button').forEach(btn => btn.classList.replace('text-blue-400', 'text-gray-500'));
+            const activeNav = document.getElementById('nav-' + pageId);
+            if(activeNav) activeNav.classList.replace('text-gray-500', 'text-blue-400');
+            window.scrollTo(0,0);
         }
 
-        // Billing Logic (Personal / Business)
-        function setBilling(type) {
-            const personal = document.getElementById('btn-personal');
-            const business = document.getElementById('btn-business');
-            
-            if(type === 'personal') {
-                personal.className = "flex-1 py-2 rounded-xl bg-blue-600 text-sm font-bold transition";
-                business.className = "flex-1 py-2 rounded-xl bg-white/5 text-sm font-bold transition";
+        // --- AUDIO PLAYER LOGIC ---
+        function togglePlay() {
+            if (audio.paused) {
+                audio.play();
+                playBtn.innerHTML = '<i data-lucide="pause" class="fill-current"></i>';
             } else {
-                business.className = "flex-1 py-2 rounded-xl bg-blue-600 text-sm font-bold transition";
-                personal.className = "flex-1 py-2 rounded-xl bg-white/5 text-sm font-bold transition";
-                alert("Επιλέχθηκε: Τιμολόγιο Επιχείρησης. Θα σας ζητηθεί ΑΦΜ στην επόμενη οθόνη.");
+                audio.pause();
+                playBtn.innerHTML = '<i data-lucide="play" id="play-icon" class="fill-current"></i>';
+            }
+            lucide.createIcons();
+        }
+
+        audio.ontimeupdate = () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressBar.value = progress || 0;
+            
+            let m = Math.floor(audio.currentTime / 60);
+            let s = Math.floor(audio.currentTime % 60);
+            // timeDisplay.innerText = `${m}:${s < 10 ? '0'+s : s}`; // Optional display
+        };
+
+        progressBar.oninput = () => {
+            const time = (progressBar.value * audio.duration) / 100;
+            audio.currentTime = time;
+        };
+
+        function seek(seconds) {
+            audio.currentTime += seconds;
+        }
+
+        audio.onloadedmetadata = () => {
+            let m = Math.floor(audio.duration / 60);
+            let s = Math.floor(audio.duration % 60);
+            durationDisplay.innerText = `${m}:${s < 10 ? '0'+s : s}`;
+        };
+
+        // --- CHECKOUT LOGIC ---
+        function setBilling(type) {
+            const p = document.getElementById('p-btn');
+            const b = document.getElementById('b-btn');
+            if(type === 'personal') {
+                p.classList.add('bg-blue-600'); b.classList.remove('bg-blue-600');
+            } else {
+                b.classList.add('bg-blue-600'); p.classList.remove('bg-blue-600');
             }
         }
 
-        // Fake Payment Process
-        function fakeProcess() {
-            const btn = event.target;
-            const originalText = btn.innerText;
-            btn.innerText = "Επεξεργασία...";
-            btn.disabled = true;
-            
+        function processFakePayment() {
+            const b = document.getElementById('pay-master-btn');
+            b.innerText = "Processing...";
+            b.disabled = true;
             setTimeout(() => {
-                alert("✅ Η πληρωμή ολοκληρώθηκε επιτυχώς!");
-                btn.innerText = originalText;
-                btn.disabled = false;
+                alert("✅ Πληρωμή Επιτυχής!");
+                b.innerText = "Πληρωμή €9.99";
+                b.disabled = false;
                 showPage('wallet');
-            }, 2000);
+            }, 1800);
         }
 
-        // Invoice Logic
-        function openInvoice(id, price) {
-            document.getElementById('inv-id').innerText = id;
-            document.getElementById('inv-price').innerText = '€' + price;
+        // --- INVOICE LOGIC ---
+        function showInvoice(id, price) {
+            document.getElementById('inv-id-text').innerText = id;
+            document.getElementById('inv-price-text').innerText = '€' + price;
+            document.getElementById('inv-total-text').innerText = '€' + price;
             document.getElementById('invoice-modal').classList.remove('hidden');
         }
-        function closeInvoice() {
+        function hideInvoice() {
             document.getElementById('invoice-modal').classList.add('hidden');
         }
     </script>
