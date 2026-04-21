@@ -1,228 +1,1101 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>LuminaBooks - Ultimate Mobile Experience</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LuminaBooks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --ink: #0d0d14;
+            --ink-2: #1a1a28;
+            --ink-3: #262636;
+            --mist: #f0eee9;
+            --mist-2: #e6e3dc;
+            --gold: #c9a84c;
+            --gold-soft: rgba(201,168,76,0.15);
+            --gold-glow: rgba(201,168,76,0.08);
+            --blue: #4f8ef7;
+            --blue-soft: rgba(79,142,247,0.12);
+            --lilac: #9f8cf7;
+            --emerald: #4fba87;
+            --surface: rgba(255,255,255,0.04);
+            --surface-2: rgba(255,255,255,0.07);
+            --border: rgba(255,255,255,0.08);
+            --border-2: rgba(255,255,255,0.14);
+            --text: #f5f3ef;
+            --text-2: #a09d96;
+            --text-3: #6b6862;
+            --r-sm: 12px;
+            --r-md: 18px;
+            --r-lg: 24px;
+            --r-xl: 32px;
+        }
 
-:root {
-  --primary: #3b82f6;
-  --secondary: #a78bfa;
-  --bg-dark: #020617;
-}
-body {
-  background: radial-gradient(circle at top right, #1e1b4b, #020617);
-  color: #f8fafc;
-  font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
-  -webkit-tap-highlight-color: transparent;
-}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* Glassmorphism */
-.glass {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-}
+        body {
+            background: var(--ink);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-.glass-dark {
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(22px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-}
+        /* Ambient bg */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px; right: -200px;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(79,142,247,0.07) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -150px; left: -150px;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+            pointer-events: none; z-index: 0;
+        }
 
-/* Animations */
-.page-transition {
-  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.view { display: none; }
-.active-view { display: block; }
+        /* ─── TYPOGRAPHY ─────────────────────────────── */
+        .serif { font-family: 'DM Serif Display', serif; }
+        .serif-italic { font-family: 'DM Serif Display', serif; font-style: italic; }
 
-input[type='range'] {
-  -webkit-appearance: none;
-  width: 100%;
-  background: transparent;
-}
-input[type='range']::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 3px;
-}
-input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  background: var(--primary);
-  margin-top: -7px;
-  box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
-}
+        /* ─── SURFACES ───────────────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            backdrop-filter: blur(12px);
+        }
+        .card-raised {
+            background: var(--surface-2);
+            border: 1px solid var(--border-2);
+            border-radius: var(--r-lg);
+            backdrop-filter: blur(20px);
+        }
 
-.preview-light { background: #ffffff; color: #1a1a1a; }
-.preview-sepia { background: #f4ecd8; color: #5b4636; }
-.preview-dark { background: #1a1a1a; color: #e5e7eb; }
+        /* ─── LAYOUT ─────────────────────────────────── */
+        header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+            padding: 16px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(13,13,20,0.75);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
 
-.gradient-text {
-  background: linear-gradient(90deg, #60a5fa, #a78bfa);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+        .logo-mark {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, var(--gold) 0%, #e8c96a 100%);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px rgba(201,168,76,0.3);
+        }
+        .logo-text { font-size: 18px; font-weight: 600; letter-spacing: -0.5px; }
+        .logo-text span { color: var(--gold); }
 
-.bento-item {
-  transition: all 0.3s ease;
-}
-.nav-active {
-  color: var(--primary);
-  transform: translateY(-2px);
-}
-/* Hide Scrollbar */
-::-webkit-scrollbar { display: none; }
-</style>
+        .btn-header {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px; font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 100px;
+            border: 1px solid var(--border-2);
+            background: var(--surface-2);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-header:hover { background: var(--surface-2); border-color: var(--gold); color: var(--gold); }
+
+        main {
+            position: relative; z-index: 1;
+            padding: 88px 20px 110px;
+            max-width: 430px; margin: 0 auto;
+        }
+
+        /* ─── VIEWS ──────────────────────────────────── */
+        .view { display: none; }
+        .active-view { display: block; animation: fadeUp 0.35s cubic-bezier(0.22,1,0.36,1) both; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ─── LANDING ────────────────────────────────── */
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 11px; font-weight: 600; letter-spacing: 1.5px;
+            color: var(--gold); text-transform: uppercase;
+            padding: 5px 12px;
+            border: 1px solid rgba(201,168,76,0.3);
+            border-radius: 100px;
+            background: var(--gold-glow);
+            margin-bottom: 20px;
+        }
+        .hero-eyebrow span { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); display: block; }
+
+        .hero-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 50px; line-height: 1.05;
+            letter-spacing: -1px;
+            margin-bottom: 18px;
+        }
+        .hero-title em { font-style: italic; color: var(--gold); }
+
+        .hero-sub {
+            font-size: 16px; line-height: 1.65;
+            color: var(--text-2); margin-bottom: 32px;
+            max-width: 340px;
+        }
+
+        .btn-primary {
+            font-family: 'DM Sans', sans-serif;
+            width: 100%; padding: 18px;
+            background: var(--gold);
+            color: var(--ink);
+            border: none; border-radius: var(--r-md);
+            font-size: 16px; font-weight: 600;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 8px 32px rgba(201,168,76,0.25);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 40px rgba(201,168,76,0.35); }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-ghost {
+            font-family: 'DM Sans', sans-serif;
+            width: 100%; padding: 18px;
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border-2);
+            border-radius: var(--r-md);
+            font-size: 16px; font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-ghost:hover { background: var(--surface-2); }
+
+        .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+        .bento-full { grid-column: 1 / -1; }
+
+        .bento-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 22px;
+            position: relative; overflow: hidden;
+        }
+        .bento-card .icon-wrap {
+            width: 36px; height: 36px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 14px;
+        }
+        .bento-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 5px; }
+        .bento-card p { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+
+        .bento-card::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.03), transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Theme demo */
+        .theme-pills { display: flex; gap: 8px; margin-bottom: 16px; }
+        .theme-pill {
+            flex: 1; padding: 9px;
+            border-radius: var(--r-sm); font-size: 12px; font-weight: 600;
+            border: none; cursor: pointer; transition: all 0.2s;
+        }
+        .theme-demo {
+            padding: 18px; border-radius: var(--r-md);
+            font-size: 14px; line-height: 1.7;
+            transition: all 0.4s;
+            font-style: italic;
+        }
+        .preview-light { background: #fff; color: #1a1a1a; }
+        .preview-sepia { background: #f5f0e8; color: #4a3728; }
+        .preview-dark { background: #161616; color: #e5e0d8; }
+
+        /* ─── LIBRARY ────────────────────────────────── */
+        .now-playing-card {
+            background: linear-gradient(135deg, rgba(79,142,247,0.12), rgba(159,140,247,0.08));
+            border: 1px solid rgba(79,142,247,0.2);
+            border-radius: var(--r-xl);
+            padding: 24px;
+            margin-bottom: 28px;
+        }
+        .np-meta-label {
+            font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
+            text-transform: uppercase; color: var(--blue);
+            margin-bottom: 16px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .np-meta-label::before {
+            content: '';
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--blue);
+            animation: blink 1.5s ease-in-out infinite;
+        }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .np-book-info { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 24px; }
+        .np-cover {
+            width: 70px; height: 96px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+        .np-title { font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1.2; margin-bottom: 4px; }
+        .np-author { font-size: 13px; color: var(--text-2); font-style: italic; }
+
+        /* Progress */
+        .progress-track {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+        .progress-fill { height: 100%; background: var(--blue); border-radius: 2px; transition: width 0.1s; width: 0%; }
+
+        input[type='range'].player-range {
+            -webkit-appearance: none;
+            width: 100%; height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px; cursor: pointer;
+        }
+        input[type='range'].player-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 0 8px rgba(255,255,255,0.3);
+        }
+
+        .time-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-3); font-variant-numeric: tabular-nums; margin-bottom: 20px; }
+
+        .player-controls { display: flex; align-items: center; justify-content: center; gap: 24px; }
+        .ctrl-btn {
+            background: none; border: none; color: var(--text-2); cursor: pointer;
+            padding: 8px; transition: all 0.2s;
+        }
+        .ctrl-btn:hover { color: var(--text); }
+        .play-btn {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: white;
+            border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 20px rgba(255,255,255,0.15);
+            transition: all 0.2s; color: var(--ink);
+        }
+        .play-btn:active { transform: scale(0.94); }
+
+        .section-label {
+            font-size: 12px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-3); margin-bottom: 14px;
+        }
+
+        .book-item {
+            display: flex; gap: 14px; align-items: center;
+            padding: 14px;
+            border-radius: var(--r-md);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .book-item:hover { border-color: var(--border-2); background: var(--surface-2); }
+        .book-thumb {
+            width: 44px; height: 60px;
+            border-radius: 6px; object-fit: cover;
+            flex-shrink: 0;
+        }
+        .book-progress-bar { height: 3px; border-radius: 2px; background: rgba(255,255,255,0.08); margin-top: 8px; overflow: hidden; }
+        .book-progress-fill { height: 100%; border-radius: 2px; }
+
+        /* ─── CHECKOUT ───────────────────────────────── */
+        .price-hero {
+            text-align: center; padding: 32px 0; margin-bottom: 24px;
+        }
+        .price-badge {
+            display: inline-block; font-size: 11px; font-weight: 600;
+            letter-spacing: 1px; text-transform: uppercase;
+            padding: 5px 12px; border-radius: 100px;
+            background: var(--gold-soft); color: var(--gold);
+            border: 1px solid rgba(201,168,76,0.2);
+            margin-bottom: 16px;
+        }
+        .price-amount {
+            font-family: 'DM Serif Display', serif;
+            font-size: 64px; line-height: 1;
+            letter-spacing: -2px; margin-bottom: 6px;
+        }
+        .price-amount sup { font-size: 28px; vertical-align: super; letter-spacing: 0; }
+        .price-sub { font-size: 14px; color: var(--text-2); }
+
+        .form-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-3); margin-bottom: 10px; display: block; }
+
+        .seg-control { display: flex; gap: 6px; margin-bottom: 18px; padding: 4px; background: var(--ink-3); border-radius: var(--r-sm); }
+        .seg-btn {
+            flex: 1; padding: 10px;
+            border-radius: 8px; border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px; font-weight: 500;
+            cursor: pointer; transition: all 0.2s;
+            background: transparent; color: var(--text-2);
+        }
+        .seg-btn.active { background: var(--ink-2); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+        .business-fields { display: none; }
+        .business-fields.visible { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; animation: fadeUp 0.25s ease; }
+
+        .form-input {
+            width: 100%; padding: 14px 16px;
+            background: var(--ink-3); border: 1px solid var(--border);
+            border-radius: var(--r-sm); color: var(--text);
+            font-family: 'DM Sans', sans-serif; font-size: 14px;
+            outline: none; transition: border-color 0.2s;
+        }
+        .form-input:focus { border-color: var(--blue); }
+        .form-input::placeholder { color: var(--text-3); }
+
+        .pay-option {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px; border-radius: var(--r-md);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            cursor: pointer; margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        .pay-option:hover { border-color: var(--border-2); }
+        .pay-option input[type=radio] { accent-color: var(--blue); width: 16px; height: 16px; }
+        .pay-option-left { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 500; }
+
+        /* ─── WALLET ─────────────────────────────────── */
+        .wallet-hero {
+            text-align: center; padding: 36px 24px;
+            background: linear-gradient(135deg, var(--ink-2), var(--ink-3));
+            border: 1px solid var(--border-2);
+            border-radius: var(--r-xl); margin-bottom: 28px;
+            position: relative; overflow: hidden;
+        }
+        .wallet-hero::before {
+            content: '';
+            position: absolute; top: -50px; right: -50px;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 70%);
+        }
+        .wallet-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; }
+        .wallet-amount { font-family: 'DM Serif Display', serif; font-size: 56px; letter-spacing: -2px; margin-bottom: 20px; }
+        .wallet-add-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 20px; border-radius: 100px;
+            background: var(--gold); color: var(--ink);
+            font-size: 13px; font-weight: 600; border: none; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .wallet-add-btn:hover { box-shadow: 0 4px 16px rgba(201,168,76,0.3); }
+
+        .txn-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px; border-radius: var(--r-md);
+            border: 1px solid var(--border);
+            background: var(--surface);
+            margin-bottom: 10px; cursor: pointer;
+            transition: all 0.2s;
+        }
+        .txn-item:hover { border-color: var(--border-2); background: var(--surface-2); }
+        .txn-icon {
+            width: 38px; height: 38px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 12px;
+        }
+        .txn-name { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+        .txn-date { font-size: 11px; color: var(--text-3); }
+        .txn-amount { font-size: 14px; font-weight: 600; }
+        .txn-link { font-size: 10px; color: var(--blue); text-decoration: underline; margin-top: 2px; text-align: right; }
+
+        /* ─── SETTINGS ───────────────────────────────── */
+        .profile-card {
+            display: flex; align-items: center; gap: 16px;
+            padding: 22px; border-bottom: 1px solid var(--border);
+        }
+        .avatar {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--lilac));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 600;
+            flex-shrink: 0;
+        }
+        .profile-name { font-size: 17px; font-weight: 600; margin-bottom: 2px; }
+        .profile-plan { font-size: 12px; color: var(--gold); font-weight: 500; display: flex; align-items: center; gap: 4px; }
+
+        .settings-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 22px;
+            cursor: pointer; transition: background 0.2s;
+            border-radius: 0;
+        }
+        .settings-row:hover { background: var(--surface-2); }
+        .settings-row-left { display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 400; }
+        .settings-row-left .icon-bg {
+            width: 30px; height: 30px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .toggle {
+            width: 44px; height: 24px;
+            background: var(--blue); border-radius: 12px;
+            position: relative;
+        }
+        .toggle::after {
+            content: ''; position: absolute;
+            right: 3px; top: 3px;
+            width: 18px; height: 18px;
+            background: white; border-radius: 50%;
+        }
+
+        /* ─── NAV ────────────────────────────────────── */
+        nav {
+            position: fixed; bottom: 16px; left: 16px; right: 16px; z-index: 50;
+            background: var(--ink-2);
+            border: 1px solid var(--border-2);
+            border-radius: var(--r-xl);
+            padding: 8px 4px;
+            display: flex; justify-content: space-around; align-items: center;
+            backdrop-filter: blur(24px);
+            max-width: 398px; margin: 0 auto;
+        }
+        .nav-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            padding: 10px 16px; border-radius: var(--r-md);
+            background: none; border: none; cursor: pointer;
+            color: var(--text-3); transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .nav-btn span { font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+        .nav-btn.nav-active { color: var(--gold); background: var(--gold-glow); }
+        .nav-btn.nav-active svg { stroke: var(--gold); }
+
+        /* ─── MODALS ─────────────────────────────────── */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 100;
+            align-items: flex-end; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-backdrop {
+            position: absolute; inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+        }
+        .modal-sheet {
+            position: relative; z-index: 1;
+            width: 100%; max-width: 430px;
+            background: var(--ink-2);
+            border: 1px solid var(--border-2);
+            border-radius: var(--r-xl) var(--r-xl) 0 0;
+            padding: 32px 24px 48px;
+            animation: sheetUp 0.4s cubic-bezier(0.22,1,0.36,1) both;
+        }
+        @keyframes sheetUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .sheet-handle {
+            width: 40px; height: 4px; border-radius: 2px;
+            background: var(--border-2); margin: 0 auto 28px;
+        }
+        .modal-title { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 6px; }
+        .modal-sub { font-size: 14px; color: var(--text-2); margin-bottom: 28px; }
+
+        .auth-input {
+            width: 100%; padding: 15px 16px;
+            background: var(--ink-3); border: 1px solid var(--border);
+            border-radius: var(--r-md); color: var(--text);
+            font-family: 'DM Sans', sans-serif; font-size: 15px;
+            outline: none; transition: border-color 0.2s; margin-bottom: 12px;
+        }
+        .auth-input:focus { border-color: var(--gold); }
+        .auth-input::placeholder { color: var(--text-3); }
+
+        .auth-switch { text-align: center; font-size: 14px; color: var(--text-2); margin-top: 16px; }
+        .auth-switch a { color: var(--gold); font-weight: 500; cursor: pointer; text-decoration: none; }
+
+        /* Invoice */
+        .invoice-modal-overlay {
+            display: none; position: fixed; inset: 0; z-index: 100;
+            align-items: center; justify-content: center; padding: 24px;
+        }
+        .invoice-modal-overlay.open { display: flex; }
+
+        .invoice-sheet {
+            background: #fff; color: #111;
+            border-radius: var(--r-xl); padding: 32px;
+            width: 100%; max-width: 360px;
+            position: relative; z-index: 1;
+            animation: fadeUp 0.35s cubic-bezier(0.22,1,0.36,1) both;
+        }
+        .inv-brand { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 2px; }
+        .inv-brand span { color: #c9a84c; }
+        .inv-subtitle { font-size: 9px; color: #999; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; }
+        .inv-divider { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+        .inv-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; }
+        .inv-row span:first-child { color: #888; }
+        .inv-row span:last-child { font-weight: 500; }
+        .inv-total-box { background: #f7f5f0; border-radius: 12px; padding: 18px 20px; margin: 20px 0; }
+        .inv-total-label { font-size: 10px; color: #999; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .inv-total-row { display: flex; justify-content: space-between; align-items: baseline; }
+        .inv-total-amount { font-family: 'DM Serif Display', serif; font-size: 36px; }
+        .inv-paid-badge { font-size: 10px; font-weight: 700; color: #2d8a5e; background: #e4f5ee; padding: 4px 10px; border-radius: 100px; letter-spacing: 0.5px; }
+        .btn-download { width: 100%; padding: 14px; background: #111; color: #fff; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+        /* ─── TOAST ──────────────────────────────────── */
+        .toast {
+            position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-8px);
+            background: var(--ink-2); border: 1px solid var(--border-2);
+            color: var(--text); padding: 12px 20px;
+            border-radius: 100px; font-size: 14px; font-weight: 500;
+            z-index: 200; opacity: 0; transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ─── MISC ───────────────────────────────────── */
+        ::-webkit-scrollbar { display: none; }
+
+        .gradient-gold {
+            background: linear-gradient(90deg, var(--gold), #e8c96a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+        .spin {
+            width: 20px; height: 20px;
+            border: 2px solid rgba(13,13,20,0.3);
+            border-top-color: var(--ink);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 </head>
-<body class="min-h-screen">
+<body>
 
 <audio id="main-player" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
-<header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center bg-[#020617]/70 backdrop-blur-md shadow-lg shadow-black/40 rounded-b-xl">
-  <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('landing')">
-    <div class="w-10 h-10 bg-gradient-to-tr from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-purple-600/30">
-      <i data-lucide="book-open" class="text-white w-6 h-6"></i>
+<header>
+    <div style="display:flex;align-items:center;gap:10px;cursor:pointer" onclick="navigateTo('landing')">
+        <div class="logo-mark"><i data-lucide="book-open" style="width:18px;height:18px;color:#0d0d14"></i></div>
+        <span class="logo-text">Lumina<span>Books</span></span>
     </div>
-    <h1 class="text-2xl font-extrabold tracking-tighter">Lumina<span class="text-blue-400">Books</span></h1>
-  </div>
-  <div id="header-actions">
-    <button onclick="openAuthModal('login')" class="px-4 py-2 bg-blue-600 text-sm font-semibold rounded-xl shadow hover:bg-blue-500 transition">Login</button>
-  </div>
+    <div id="header-actions">
+        <button class="btn-header" onclick="openAuthModal('login')">Σύνδεση</button>
+    </div>
 </header>
 
-<main class="pt-24 pb-32 px-5 max-w-lg mx-auto">
+<main>
 
-<!-- Landing View -->
-<section id="view-landing" class="view active-view page-transition">
-  <div class="mb-12 text-center">
-    <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.2] mb-6">
-      Διάβασε το <br><span class="gradient-text">Μέλλον</span> <br>Σήμερα.
-    </h1>
-    <p class="text-gray-400 text-lg mb-8 leading-relaxed">
-      Η μοναδική πλατφόρμα με AI περιλήψεις και έξυπνα audiobooks.
-    </p>
-    <div class="flex flex-col gap-4">
-      <button onclick="openAuthModal('register')" class="w-full bg-gradient-to-tr from-blue-500 to-purple-600 py-4 rounded-2xl font-bold text-lg shadow-xl shadow-purple-600/40 flex items-center justify-center gap-3 hover:scale-105 transition">
-        Ξεκίνα Τώρα <i data-lucide="chevron-right"></i>
-      </button>
-      <button onclick="navigateTo('library')" class="w-full glass px-5 py-4 rounded-2xl font-bold text-lg hover:bg-white/10 transition">Δες το Demo</button>
-    </div>
-  </div>
-  <div class="grid grid-cols-2 gap-4 mt-8">
-    <div class="glass p-6 col-span-2 border-2 border-blue-400/20 rounded-xl shadow-lg hover:scale-105 transition bento-item">
-      <i data-lucide="sparkles" class="text-blue-400 mb-3 w-6 h-6"></i>
-      <h3 class="font-bold text-xl mb-2">AI Summaries</h3>
-      <p class="text-gray-400 text-sm">Περιλήψεις κεφαλαίων σε δευτερόλεπτα.</p>
-    </div>
-    <div class="glass p-6 rounded-xl shadow-lg hover:scale-105 transition bento-item">
-      <i data-lucide="headphones" class="text-purple-400 mb-3 w-6 h-6"></i>
-      <h3 class="font-bold mb-2">Audio</h3>
-    </div>
-    <div class="glass p-6 rounded-xl shadow-lg hover:scale-105 transition bento-item">
-      <i data-lucide="wifi-off" class="text-emerald-400 mb-3 w-6 h-6"></i>
-      <h3 class="font-bold mb-2">Offline</h3>
-    </div>
-  </div>
+    <!-- ── LANDING ── -->
+    <section id="view-landing" class="view active-view">
 
-  <div class="mt-8 p-6 bg-white/10 rounded-xl shadow-lg backdrop-blur-md border border-white/20">
-    <h3 class="font-bold mb-4">Δοκίμασε το Reading Mode</h3>
-    <div class="flex gap-2 mb-4 justify-center">
-      <button onclick="changeTheme('light')" class="flex-1 py-2 px-4 bg-white text-black rounded-lg font-semibold text-xs hover:bg-gray-100 transition">Light</button>
-      <button onclick="changeTheme('sepia')" class="flex-1 py-2 px-4 bg-[#f4ecd8] text-[#5b4636] rounded-lg font-semibold text-xs hover:bg-[#e2d4b1] transition">Sepia</button>
-      <button onclick="changeTheme('dark')" class="flex-1 py-2 px-4 bg-gray-800 text-white rounded-lg font-semibold text-xs hover:bg-gray-700 transition">Dark</button>
-    </div>
-    <div id="theme-demo" class="p-4 rounded-xl transition-all min-h-[80px] bg-preview-light text-gray-800">
-      "Η γνώση είναι δύναμη. Με το LuminaBooks, η ανάγνωση γίνεται εμπειρία..."
-    </div>
-  </div>
-</section>
+        <div style="margin-bottom:40px">
+            <div class="hero-eyebrow"><span></span> Νέα Εποχή Ανάγνωσης</div>
+            <h1 class="hero-title">Διάβασε το <em>Μέλλον</em><br>Σήμερα.</h1>
+            <p class="hero-sub">Η πλατφόρμα με AI περιλήψεις, έξυπνα audiobooks και offline ανάγνωση.</p>
+            <div style="display:flex;flex-direction:column;gap:12px">
+                <button class="btn-primary" onclick="openAuthModal('register')">Ξεκίνα Τώρα <i data-lucide="arrow-right" style="width:18px;height:18px"></i></button>
+                <button class="btn-ghost" onclick="navigateTo('library')">Δες το Demo</button>
+            </div>
+        </div>
 
-<!-- Library View -->
-<section id="view-library" class="view page-transition">
-  <h2 class="text-3xl md:text-4xl font-extrabold mb-8">Η Βιβλιοθήκη μου</h2>
-  <div class="glass p-6 mb-8 rounded-xl shadow-lg hover:scale-105 transition">
-    <div class="flex gap-4 mb-4 items-center">
-      <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=300" class="w-24 h-24 rounded-xl object-cover shadow-lg" alt="cover" />
-      <div>
-        <span class="text-[10px] uppercase font-bold text-blue-400 tracking-widest">Τώρα Ακούτε</span>
-        <h3 class="text-xl font-bold mt-1">Digital Fortress</h3>
-        <p class="text-gray-400 text-sm italic">Dan Brown</p>
-      </div>
-    </div>
-    <div class="space-y-4">
-      <input type="range" id="player-progress" value="0" step="0.1" class="w-full"/>
-      <div class="flex justify-between text-[10px] text-gray-500 font-mono">
-        <span id="player-current">0:00</span>
-        <span id="player-total">0:00</span>
-      </div>
-      <div class="flex justify-center items-center gap-10 py-2">
-        <button onclick="audioControl('rewind')" class="text-gray-400 hover:text-white"><i data-lucide="skip-back" class="w-5 h-5"></i></button>
-        <button onclick="audioControl('toggle')" id="main-play-btn" class="w-16 h-16 bg-gradient-to-tr from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-purple-600/30 transition hover:scale-105">
-          <i data-lucide="play" class="text-white" id="play-icon"></i>
+        <div class="bento-grid">
+            <div class="bento-card bento-full" style="border-color:rgba(79,142,247,0.2);background:linear-gradient(135deg,rgba(79,142,247,0.07),rgba(159,140,247,0.05))">
+                <div class="icon-wrap" style="background:rgba(79,142,247,0.15)">
+                    <i data-lucide="sparkles" style="width:18px;height:18px;color:#4f8ef7"></i>
+                </div>
+                <h3>AI Summaries</h3>
+                <p>Έξυπνες περιλήψεις κεφαλαίων σε δευτερόλεπτα με ανάλυση θεμάτων.</p>
+            </div>
+            <div class="bento-card" style="border-color:rgba(159,140,247,0.2)">
+                <div class="icon-wrap" style="background:rgba(159,140,247,0.15)">
+                    <i data-lucide="headphones" style="width:18px;height:18px;color:#9f8cf7"></i>
+                </div>
+                <h3>Audiobooks</h3>
+                <p style="color:var(--text-2);font-size:12px">Φυσική φωνή AI</p>
+            </div>
+            <div class="bento-card" style="border-color:rgba(79,186,135,0.2)">
+                <div class="icon-wrap" style="background:rgba(79,186,135,0.15)">
+                    <i data-lucide="wifi-off" style="width:18px;height:18px;color:#4fba87"></i>
+                </div>
+                <h3>Offline</h3>
+                <p style="color:var(--text-2);font-size:12px">Χωρίς σύνδεση</p>
+            </div>
+        </div>
+
+        <div class="card" style="padding:22px">
+            <p style="font-size:13px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px">Δοκίμασε Reading Mode</p>
+            <div class="theme-pills">
+                <button class="theme-pill" style="background:#fff;color:#111" onclick="changeTheme('light')">Light</button>
+                <button class="theme-pill" style="background:#f5f0e8;color:#4a3728" onclick="changeTheme('sepia')">Sepia</button>
+                <button class="theme-pill" style="background:#1a1a1a;color:#e5e0d8;border:1px solid #333" onclick="changeTheme('dark')">Dark</button>
+            </div>
+            <div id="theme-demo" class="theme-demo preview-dark">
+                <em>"Η γνώση είναι δύναμη. Με το LuminaBooks, η ανάγνωση γίνεται εμπειρία που αλλάζει τον τρόπο που βλέπεις τον κόσμο."</em>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ── LIBRARY ── -->
+    <section id="view-library" class="view">
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+            <h2 style="font-family:'DM Serif Display',serif;font-size:30px">Βιβλιοθήκη</h2>
+            <button style="background:none;border:none;color:var(--text-2);cursor:pointer">
+                <i data-lucide="search" style="width:20px;height:20px"></i>
+            </button>
+        </div>
+
+        <div class="now-playing-card">
+            <p class="np-meta-label">Τώρα Ακούτε</p>
+            <div class="np-book-info">
+                <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=300" class="np-cover" alt="cover">
+                <div style="padding-top:4px">
+                    <h3 class="np-title">Digital Fortress</h3>
+                    <p class="np-author">Dan Brown</p>
+                    <div style="margin-top:12px;display:flex;gap:6px">
+                        <span style="font-size:10px;background:rgba(79,142,247,0.15);color:var(--blue);padding:3px 8px;border-radius:100px;font-weight:500">Θρίλερ</span>
+                        <span style="font-size:10px;background:var(--surface-2);color:var(--text-2);padding:3px 8px;border-radius:100px">4.2h</span>
+                    </div>
+                </div>
+            </div>
+
+            <input type="range" class="player-range" id="player-progress" value="0" step="0.1" style="margin-bottom:8px">
+            <div class="time-row">
+                <span id="player-current">0:00</span>
+                <span id="player-total">0:00</span>
+            </div>
+            <div class="player-controls">
+                <button class="ctrl-btn" onclick="audioControl('rewind')"><i data-lucide="skip-back" style="width:22px;height:22px"></i></button>
+                <button class="play-btn" onclick="audioControl('toggle')" id="main-play-btn">
+                    <i data-lucide="play" id="play-icon" style="width:22px;height:22px;margin-left:2px"></i>
+                </button>
+                <button class="ctrl-btn" onclick="audioControl('forward')"><i data-lucide="skip-forward" style="width:22px;height:22px"></i></button>
+            </div>
+        </div>
+
+        <p class="section-label">Συνέχισε</p>
+        <div class="book-item">
+            <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100" class="book-thumb" alt="">
+            <div style="flex:1;min-width:0">
+                <p style="font-weight:500;font-size:14px;margin-bottom:2px">The Great Gatsby</p>
+                <p style="font-size:12px;color:var(--text-3)">F. Scott Fitzgerald</p>
+                <div class="book-progress-bar"><div class="book-progress-fill" style="width:74%;background:var(--blue)"></div></div>
+            </div>
+            <div style="text-align:right">
+                <i data-lucide="book-open" style="width:16px;height:16px;color:var(--blue)"></i>
+                <p style="font-size:10px;color:var(--text-3);margin-top:4px">74%</p>
+            </div>
+        </div>
+        <div class="book-item">
+            <img src="https://images.unsplash.com/photo-1543004218-ee1411045250?w=100" class="book-thumb" alt="">
+            <div style="flex:1;min-width:0">
+                <p style="font-weight:500;font-size:14px;margin-bottom:2px">Atomic Habits</p>
+                <p style="font-size:12px;color:var(--text-3)">James Clear</p>
+                <div class="book-progress-bar"><div class="book-progress-fill" style="width:25%;background:var(--lilac)"></div></div>
+            </div>
+            <div style="text-align:right">
+                <i data-lucide="headphones" style="width:16px;height:16px;color:var(--lilac)"></i>
+                <p style="font-size:10px;color:var(--text-3);margin-top:4px">25%</p>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ── CHECKOUT ── -->
+    <section id="view-checkout" class="view">
+
+        <div class="price-hero">
+            <span class="price-badge">✦ Premium Plan</span>
+            <div class="price-amount"><sup>€</sup>99</div>
+            <p class="price-sub">ανά έτος · ακύρωση ανά πάσα στιγμή</p>
+        </div>
+
+        <div class="card" style="padding:22px;margin-bottom:16px">
+            <span class="form-label">Τύπος Χρέωσης</span>
+            <div class="seg-control">
+                <button class="seg-btn active" id="bill-personal" onclick="toggleBilling('personal')">Ιδιώτης</button>
+                <button class="seg-btn" id="bill-business" onclick="toggleBilling('business')">Επιχείρηση</button>
+            </div>
+
+            <div class="business-fields" id="business-info">
+                <input type="text" class="form-input" placeholder="Επωνυμία Εταιρείας">
+                <input type="text" class="form-input" placeholder="Α.Φ.Μ.">
+                <input type="text" class="form-input" placeholder="Δ.Ο.Υ.">
+            </div>
+
+            <span class="form-label" style="margin-top:4px">Μέθοδος Πληρωμής</span>
+            <label class="pay-option">
+                <div class="pay-option-left">
+                    <i data-lucide="credit-card" style="width:18px;height:18px;color:var(--blue)"></i>
+                    <span>Κάρτα</span>
+                </div>
+                <input type="radio" name="pay-method" checked>
+            </label>
+            <label class="pay-option">
+                <div class="pay-option-left">
+                    <i data-lucide="layout-grid" style="width:18px;height:18px;color:var(--emerald)"></i>
+                    <span>PayPal</span>
+                </div>
+                <input type="radio" name="pay-method">
+            </label>
+        </div>
+
+        <div class="card" style="padding:16px 18px;margin-bottom:16px;border-color:rgba(201,168,76,0.15)">
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-2);margin-bottom:6px">
+                <span>Ετήσιο Premium</span><span>€99.00</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--text-2);margin-bottom:12px">
+                <span>ΦΠΑ (24%)</span><span>+€23.76</span>
+            </div>
+            <hr class="divider" style="margin:0 0 12px">
+            <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:600">
+                <span>Σύνολο</span><span class="gradient-gold">€122.76</span>
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="processPayment()" id="pay-btn">
+            Ολοκλήρωση Πληρωμής
         </button>
-        <button onclick="audioControl('forward')" class="text-gray-400 hover:text-white"><i data-lucide="skip-forward" class="w-5 h-5"></i></button>
-      </div>
-    </div>
-  </div>
 
-  <h3 class="text-2xl font-bold mb-4">Συνέχισε την Ανάγνωση</h3>
-  <div class="space-y-4">
-    <div class="glass p-4 rounded-xl flex gap-4 items-center hover:scale-105 transition cursor-pointer" onclick="showInvoice('INV-9021', '9.99')">
-      <div class="w-12 h-16 bg-gray-800 rounded-lg overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=100" class="w-full h-full object-cover" />
-      </div>
-      <div class="flex-1">
-        <h4 class="font-bold text-sm">The Great Gatsby</h4>
-        <div class="w-full bg-white/10 h-1 rounded-full mt-2">
-          <div class="bg-blue-500 h-1 w-3/4 rounded-full"></div>
-        </div>
-      </div>
-      <i data-lucide="book-open" class="text-blue-400 w-5"></i>
-    </div>
-    <div class="glass p-4 rounded-xl flex gap-4 items-center hover:scale-105 transition cursor-pointer" onclick="showInvoice('INV-9022', '7.49')">
-      <div class="w-12 h-16 bg-gray-800 rounded-lg overflow-hidden">
-        <img src="https://images.unsplash.com/photo-1543004218-ee1411045250?w=100" class="w-full h-full object-cover" />
-      </div>
-      <div class="flex-1">
-        <h4 class="font-bold text-sm">Atomic Habits</h4>
-        <div class="w-full bg-white/10 h-1 rounded-full mt-2">
-          <div class="bg-purple-500 h-1 w-1/4 rounded-full"></div>
-        </div>
-      </div>
-      <i data-lucide="headphones" class="text-purple-400 w-5"></i>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- Check out / Premium -->
-<section id="view-checkout" class="view page-transition">
-  <h2 class="text-3xl md:text-4xl font-extrabold mb-8">Premium</h2>
-  <div class="glass p-6 mb-6 rounded-xl shadow-lg">
-    <div class="flex justify-between items-center mb-4">
-      <div>
-        <h3 class="text-xl font-bold">Ετήσιο Πλάνο</h3>
-        <p class="text-gray-400 text-sm">Απεριόριστη πρόσβαση</p>
-      </div>
-      <div class="text-right">
-        <span class="text-2xl font-extrabold text-blue-400">€99</span>
-        <p class="text-[10px] uppercase mt-1">ανά έτος</p>
-      </div>
+    <!-- ── WALLET ── -->
+    <section id="view-wallet" class="view">
+
+        <div class="wallet-hero">
+            <p class="wallet-label">Υπόλοιπο</p>
+            <h2 class="wallet-amount">€45.20</h2>
+            <button class="wallet-add-btn"><i data-lucide="plus" style="width:14px;height:14px"></i> Προσθήκη</button>
+        </div>
+
+        <p class="section-label">Ιστορικό</p>
+        <div class="txn-item" onclick="showInvoice('INV-9021','9.99')">
+            <div style="display:flex;align-items:center;flex:1">
+                <div class="txn-icon" style="background:rgba(226,75,74,0.1)">
+                    <i data-lucide="arrow-up-right" style="width:16px;height:16px;color:#e24b4a"></i>
+                </div>
+                <div>
+                    <p class="txn-name">Premium Monthly</p>
+                    <p class="txn-date">02 Απρ 2026 · 18:45</p>
+                </div>
+            </div>
+            <div style="text-align:right">
+                <p class="txn-amount" style="color:#e24b4a">−€9.99</p>
+                <p class="txn-link">Τιμολόγιο</p>
+            </div>
+        </div>
+        <div class="txn-item">
+            <div style="display:flex;align-items:center;flex:1">
+                <div class="txn-icon" style="background:rgba(79,186,135,0.1)">
+                    <i data-lucide="arrow-down-left" style="width:16px;height:16px;color:#4fba87"></i>
+                </div>
+                <div>
+                    <p class="txn-name">Επιστροφή Χρημάτων</p>
+                    <p class="txn-date">28 Μαρ 2026 · 11:20</p>
+                </div>
+            </div>
+            <div style="text-align:right">
+                <p class="txn-amount" style="color:#4fba87">+€5.00</p>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ── SETTINGS ── -->
+    <section id="view-settings" class="view">
+
+        <h2 style="font-family:'DM Serif Display',serif;font-size:30px;margin-bottom:24px">Ρυθμίσεις</h2>
+
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+            <div class="profile-card">
+                <div class="avatar">JD</div>
+                <div>
+                    <p class="profile-name">John Doe</p>
+                    <p class="profile-plan"><i data-lucide="crown" style="width:12px;height:12px"></i> Premium Member</p>
+                </div>
+            </div>
+            <div class="settings-row">
+                <div class="settings-row-left">
+                    <div class="icon-bg" style="background:rgba(79,142,247,0.12)">
+                        <i data-lucide="lock" style="width:15px;height:15px;color:var(--blue)"></i>
+                    </div>
+                    Αλλαγή Κωδικού
+                </div>
+                <i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--text-3)"></i>
+            </div>
+            <div class="settings-row">
+                <div class="settings-row-left">
+                    <div class="icon-bg" style="background:rgba(201,168,76,0.12)">
+                        <i data-lucide="bell" style="width:15px;height:15px;color:var(--gold)"></i>
+                    </div>
+                    Ειδοποιήσεις
+                </div>
+                <i data-lucide="chevron-right" style="width:16px;height:16px;color:var(--text-3)"></i>
+            </div>
+        </div>
+
+        <div class="card" style="padding:4px 0;margin-bottom:16px">
+            <div class="settings-row">
+                <div class="settings-row-left" style="font-size:14px">
+                    <div class="icon-bg" style="background:rgba(255,255,255,0.06)">
+                        <i data-lucide="moon" style="width:15px;height:15px;color:var(--text-2)"></i>
+                    </div>
+                    Dark Mode
+                </div>
+                <div class="toggle"></div>
+            </div>
+            <div class="settings-row" style="border-top:1px solid var(--border)">
+                <div class="settings-row-left" style="font-size:14px">
+                    <div class="icon-bg" style="background:rgba(255,255,255,0.06)">
+                        <i data-lucide="languages" style="width:15px;height:15px;color:var(--text-2)"></i>
+                    </div>
+                    Γλώσσα
+                </div>
+                <span style="font-size:13px;color:var(--gold);font-weight:500">Ελληνικά</span>
+            </div>
+        </div>
+
+        <div class="card" style="padding:4px 0">
+            <div class="settings-row" style="color:#e24b4a" onclick="logout()">
+                <div class="settings-row-left" style="font-size:14px;color:#e24b4a">
+                    <div class="icon-bg" style="background:rgba(226,75,74,0.1)">
+                        <i data-lucide="log-out" style="width:15px;height:15px;color:#e24b4a"></i>
+                    </div>
+                    Αποσύνδεση
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+</main>
+
+<!-- ── BOTTOM NAV ── -->
+<nav>
+    <button class="nav-btn nav-active" id="nav-landing" onclick="navigateTo('landing')">
+        <i data-lucide="home" style="width:20px;height:20px"></i>
+        <span>Home</span>
+    </button>
+    <button class="nav-btn" id="nav-library" onclick="navigateTo('library')">
+        <i data-lucide="library" style="width:20px;height:20px"></i>
+        <span>Library</span>
+    </button>
+    <button class="nav-btn" id="nav-checkout" onclick="navigateTo('checkout')">
+        <i data-lucide="zap" style="width:20px;height:20px"></i>
+        <span>Pro</span>
+    </button>
+    <button class="nav-btn" id="nav-wallet" onclick="navigateTo('wallet')">
+        <i data-lucide="wallet" style="width:20px;height:20px"></i>
+        <span>Wallet</span>
+    </button>
+    <button class="nav-btn" id="nav-settings" onclick="navigateTo('settings')">
+        <i data-lucide="settings" style="width:20px;height:20px"></i>
+        <span>Settings</span>
+    </button>
+</nav>
+
+<!-- ── AUTH MODAL ── -->
+<div class="modal-overlay" id="auth-modal">
+    <div class="modal-backdrop" onclick="closeAuthModal()"></div>
+    <div class="modal-sheet">
+        <div class="sheet-handle"></div>
+
+        <div id="login-form">
+            <h2 class="modal-title">Καλώς Ήρθες</h2>
+            <p class="modal-sub">Συνδέσου για να συνεχίσεις</p>
+            <input type="email" class="auth-input" placeholder="Email" id="login-email">
+            <input type="password" class="auth-input" placeholder="Κωδικός" id="login-pass">
+            <button class="btn-primary" onclick="handleAuth('login')">Είσοδος</button>
+            <p class="auth-switch">Δεν έχεις λογαριασμό; <a onclick="toggleAuthType('register')">Εγγραφή</a></p>
+        </div>
+
+        <div id="register-form" style="display:none">
+            <h2 class="modal-title">Δημιουργία</h2>
+            <p class="modal-sub">Γίνε μέλος του LuminaBooks</p>
+            <input type="text" class="auth-input" placeholder="Ονοματεπώνυμο">
+            <input type="email" class="auth-input" placeholder="Email">
+            <input type="password" class="auth-input" placeholder="Κωδικός">
+            <button class="btn-primary" style="background:var(--lilac);box-shadow:0 8px 32px rgba(159,140,247,0.25)" onclick="handleAuth('register')">Δημιουργία Λογαριασμού</button>
+            <p class="auth-switch">Ήδη μέλος; <a onclick="toggleAuthType('login')">Είσοδος</a></p>
+        </div>
     </div>
-    <div class="space-y-4">
-      <p class="text-xs font-bold uppercase tracking-widest text-gray-500">Στοιχεία Χρέωσης</p>
-     
+</div>
+
+<!-- ── INVOICE MODAL ── -->
+<div class="invoice-modal-overlay" id="invoice-modal">
+    <div class="modal-backdrop" onclick="closeInvoice()"></div>
+    <div class="invoice-sheet">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+            <div>
+                <p class="inv-brand">Lumina<span>Books</span></p>
+                <p class="inv-subtitle">Official Digital Invoice</p>
+            </div>
+            <div style="text-align:right">
+                <p id="inv-no" style="font-size:12px;font-weight:600;color:#333"></p>
+                <p style="font-size:11px;color:#999">02/04/2026</p>
+            </div>
+        </div>
+        <hr class="inv-divider">
+        <div class="inv-row"><span>Προϊόν</span><span>Premium Subscription</span></div>
+        <div class="inv-row"><span>Διάρκεια</span><span>1 Μήνας</span></div>
+        <div class="inv-row"><span>ΦΠΑ</span><span>€2.40</span></div>
+        <div class="inv-total-box">
+            <p class="inv-total-label">Σύνολο με ΦΠΑ</p>
+            <div class="inv-total-row">
+                <span class="inv-total-amount" id="inv-amt">€9.99</span>
+                <span class="inv-paid-badge">PAID ✓</span>
+            </div>
+        </div>
+        <button class="btn-download" onclick="window.print()">↓ Λήψη PDF</button>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const AppState = { isLoggedIn: false, currentView: 'landing', audioPlaying: false };
+
+document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    initAudio();
+});
+
+// ─ NAVIGATION ─
+function navigateTo(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
+    const t = document.getElementById('view-' + id);
+    if (t) { t.classList.add('active-view'); AppState.currentView = id; }
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
+    const nb = document.getElementById('nav-' + id);
+    if (nb) nb.classList.add('nav-active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─ AUTH ─
+function openAuthModal(type) {
+    document.getElementById('auth-modal').classList.add('open');
+    toggleAuthType(type);
+}
+function closeAuthModal() { document.getElementById('auth-modal').classList.remove('open'); }
+function toggleAuthType(type) {
+    document.getElementById('login-form').style.display = type === 'login' ? 'block' : 'none';
+    document.getElementById('register-form').style.display = type === 'register' ? 'block' : 'none';
+}
+function handleAuth(mode) {
+    AppState.isLoggedIn = true;
+    document.getElementById('header-actions').innerHTML = `
+        <div onclick="navigateTo('settings')" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--lilac));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer;border:2px solid var(--border-2)">JD</div>`;
+    closeAuthModal();
+    navigateTo('library');
+    showToast(mode === 'login' ? '👋 Καλώς ήρθες πίσω!' : '✨ Λογαριασμός δημιουργήθηκε!');
+}
+function logout() { location.reload(); }
+
+// ─ AUDIO ─
+const audio = document.getElementById('main-player');
+const progressBar = document.getElementById('player-progress');
+
+function initAudio() {
+    audio.ontimeupdate = () => {
+        const pct = (audio.currentTime / audio.duration) * 100 || 0;
+        progressBar.value = pct;
+        document.getElementById('player-current').innerText = fmt(audio.currentTime);
+        document.getElementById('player-total').innerText = fmt(audio.duration);
+    };
+    progressBar.oninput = () => { audio.currentTime = (progressBar.value * audio.duration) / 100; };
+    audio.onloadedmetadata = () => { document.getElementById('player-total').innerText = fmt(audio.duration); };
+}
+function audioControl(a) {
+    const icon = document.getElementById('play-icon');
+    if (a === 'toggle') {
+        if (audio.paused) { audio.play(); icon.setAttribute('data-lucide','pause'); AppState.audioPlaying = true; }
+        else { audio.pause(); icon.setAttribute('data-lucide','play'); AppState.audioPlaying = false; }
+        lucide.createIcons();
+    } else if (a === 'forward') audio.currentTime += 10;
+    else if (a === 'rewind') audio.currentTime -= 10;
+}
+function fmt(s) {
+    if (isNaN(s)) return '0:00';
+    const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' + sec : sec);
+}
+
+// ─ CHECKOUT ─
+function toggleBilling(type) {
+    const p = document.getElementById('bill-personal');
+    const b = document.getElementById('bill-business');
+    const bi = document.getElementById('business-info');
+    if (type === 'personal') {
+        p.classList.add('active'); b.classList.remove('active');
+        bi.classList.remove('visible');
+    } else {
+        b.classList.add('active'); p.classList.remove('active');
+        bi.classList.add('visible');
+    }
+}
+function processPayment() {
+    const btn = document.getElementById('pay-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spin"></div>';
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Ολοκλήρωση Πληρωμής';
+        showToast('✅ Πληρωμή επιτυχής!');
+        setTimeout(() => navigateTo('wallet'), 600);
+    }, 2500);
+}
+
+// ─ INVOICE ─
+function showInvoice(id, amount) {
+    document.getElementById('inv-no').innerText = id;
+    document.getElementById('inv-amt').innerText = '€' + amount;
+    document.getElementById('invoice-modal').classList.add('open');
+}
+function closeInvoice() { document.getElementById('invoice-modal').classList.remove('open'); }
+
+// ─ THEME ─
+function changeTheme(m) {
+    const d = document.getElementById('theme-demo');
+    d.className = 'theme-demo preview-' + m;
+}
+
+// ─ TOAST ─
+function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerText = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
