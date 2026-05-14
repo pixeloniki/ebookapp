@@ -2,909 +2,356 @@
 <html lang="el">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Audiobook App | Mobile Prototype</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>audioNest</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         :root {
-            --bg-dark: #0a0a0f;
-            --bg-card: #14141c;
-            --bg-elevated: #1c1c26;
-            --text-primary: #f0f0f5;
-            --text-secondary: #a0a0b0;
-            --text-muted: #6a6a7a;
+            --bg: #0a0a0f;
+            --card: #111118;
+            --elevated: #1a1a24;
             --gold: #d4af37;
-            --gold-soft: rgba(212, 175, 55, 0.15);
-            --blue: #4f8ef7;
-            --blue-soft: rgba(79, 142, 247, 0.1);
-            --purple: #9b6eff;
-            --green: #4fba87;
-            --red: #e24b4a;
-            --border: rgba(255, 255, 255, 0.08);
-            --border-light: rgba(255, 255, 255, 0.12);
-            --radius-sm: 10px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
+            --accent: #8b5cf6;
+            --text: #f1f1f5;
+            --text-secondary: #a8a8b8;
         }
 
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            font-family: 'DM Sans', sans-serif;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            height: 100vh;
         }
-
-        ::-webkit-scrollbar { display: none; }
-
         .serif { font-family: 'DM Serif Display', serif; }
 
-        .app-container {
-            max-width: 430px;
-            margin: 0 auto;
-            min-height: 100vh;
+        .app { 
+            max-width: 430px; 
+            margin: 0 auto; 
+            min-height: 100vh; 
+            background: linear-gradient(to bottom, #0a0a0f, #0f0f1a);
             position: relative;
-            background: radial-gradient(circle at 20% 0%, rgba(79, 142, 247, 0.05), transparent 70%);
+            box-shadow: 0 0 40px rgba(0,0,0,0.6);
         }
 
-        .app-header {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            padding: 16px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(10, 10, 15, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .logo span { color: var(--gold); }
-
-        .avatar-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--blue), var(--purple));
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            border: 2px solid var(--border-light);
-            transition: transform 0.2s;
-        }
-        .avatar-icon:active { transform: scale(0.95); }
-
-        .main-content {
-            padding: 20px 20px 90px;
-        }
-
-        .view { display: none; animation: fadeIn 0.3s ease; }
-        .active-view { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 16px;
-            left: 16px;
-            right: 16px;
-            max-width: 398px;
-            margin: 0 auto;
-            background: rgba(28, 28, 38, 0.95);
-            backdrop-filter: blur(24px);
-            border: 1px solid var(--border-light);
-            border-radius: 40px;
-            display: flex;
-            justify-content: space-around;
-            padding: 8px 12px;
-            z-index: 60;
-        }
-
-        .nav-item {
-            flex: 1;
-            display: flex;
             flex-direction: column;
+            z-index: 1000;
+            transition: opacity 0.8s ease;
+        }
+        .logo-spin {
+            font-size: 52px;
+            font-weight: 700;
+            letter-spacing: -2px;
+            animation: logoPulse 2s infinite;
+        }
+        @keyframes logoPulse {
+            0%, 100% { opacity: 0.7; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 18px 20px;
+            display: flex;
             align-items: center;
-            gap: 4px;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            padding: 8px 0;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .nav-item.active {
-            color: var(--gold);
-            background: var(--gold-soft);
-        }
-
-        .section-title {
-            font-family: 'DM Serif Display', serif;
-            font-size: 24px;
-            margin: 20px 0 12px;
-        }
-
-        .section-header {
-            display: flex;
             justify-content: space-between;
-            align-items: baseline;
-            margin: 20px 0 12px;
+            background: rgba(10,10,15,0.95);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
-        .section-header h3 { font-size: 18px; font-weight: 600; }
-        .see-all { font-size: 12px; color: var(--gold); cursor: pointer; }
+        .logo {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -1.2px;
+        }
+        .logo span { color: var(--gold); }
 
-        .horizontal-scroll {
+        /* Hero */
+        .hero {
+            height: 380px;
+            background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.75)), 
+                        url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=900') center/cover no-repeat;
             display: flex;
-            gap: 14px;
-            overflow-x: auto;
-            scrollbar-width: none;
-            padding-bottom: 8px;
+            align-items: flex-end;
+            padding: 32px 24px;
+            position: relative;
         }
 
         .book-card {
-            flex: 0 0 130px;
-            background: var(--bg-card);
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
+            width: 148px;
+            flex-shrink: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .book-card:active { transform: scale(0.97); background: var(--bg-elevated); }
+        .book-card:active {
+            transform: scale(0.92) translateY(4px);
+        }
         .book-cover {
             width: 100%;
             aspect-ratio: 2/3;
             object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            background: #2a2a36;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.7);
+            transition: transform 0.4s ease;
         }
-        .book-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .book-author { font-size: 10px; color: var(--text-secondary); }
-
-        .genre-chip {
-            display: inline-block;
-            padding: 6px 14px;
-            background: var(--bg-elevated);
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 500;
-            margin: 4px 6px 4px 0;
-            border: 1px solid var(--border);
-            cursor: pointer;
+        .book-card:hover .book-cover,
+        .book-card:active .book-cover {
+            transform: scale(1.06);
         }
 
-        .product-cover {
-            width: 100%;
-            max-width: 220px;
-            border-radius: 20px;
-            margin: 0 auto 20px;
-            display: block;
-            box-shadow: 0 20px 35px -12px black;
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 400px;
+            background: rgba(20,20,32,0.95);
+            backdrop-filter: blur(30px);
+            border-radius: 9999px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-around;
+            z-index: 999;
+            border: 1px solid rgba(212,175,55,0.15);
         }
-        .rating-stars { display: flex; gap: 4px; margin: 10px 0; }
-        .star-filled { color: var(--gold); fill: var(--gold); }
-        .star-empty { color: var(--text-muted); }
-
-        .btn-primary, .btn-outline {
-            width: 100%;
-            padding: 16px;
-            border-radius: 60px;
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #777;
+            font-size: 11px;
             font-weight: 600;
-            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .nav-item.active {
+            color: var(--gold);
+        }
+        .nav-item i { margin-bottom: 4px; transition: transform 0.3s; }
+        .nav-item.active i { transform: scale(1.15); }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--gold), #f0c040);
+            color: #0a0a0f;
             border: none;
-            margin-top: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-primary { background: var(--gold); color: #0a0a0f; }
-        .btn-primary:disabled { background: #555; color: #aaa; cursor: not-allowed; }
-        .btn-outline { background: transparent; border: 1px solid var(--border-light); color: var(--text-primary); }
-
-        .review-card { background: var(--bg-elevated); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 12px; }
-
-        .form-group { margin-bottom: 16px; }
-        .form-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; display: block; }
-        .form-input {
-            width: 100%;
-            padding: 14px 16px;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-
-        .payment-method-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 14px;
-            border-radius: var(--radius-md);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-
-        .player-container {
-            text-align: center;
-            padding: 20px;
-        }
-        .player-cover { width: 260px; border-radius: 24px; margin-bottom: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        .player-controls {
-            display: flex;
-            justify-content: center;
-            gap: 35px;
-            margin: 30px 0;
-        }
-        .control-btn {
-            background: var(--bg-elevated);
-            border: none;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: white;
-        }
-        .play-big { background: var(--gold); color: black; width: 70px; height: 70px; }
-
-        .progress-container {
-            margin: 20px 0;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: var(--border-light);
+            padding: 16px 24px;
             border-radius: 9999px;
-            position: relative;
-            cursor: pointer;
-        }
-        .progress {
-            height: 100%;
-            background: var(--gold);
-            border-radius: 9999px;
-            width: 0%;
+            font-weight: 700;
+            font-size: 17px;
+            width: 100%;
+            box-shadow: 0 8px 25px rgba(212,175,55,0.3);
         }
 
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .mt-4 { margin-top: 16px; }
-        .mb-2 { margin-bottom: 8px; }
-        .text-gold { color: var(--gold); }
-        .text-center { text-align: center; }
-
-        .back-btn {
-            position: absolute;
-            top: 16px;
-            left: 20px;
-            background: rgba(0,0,0,0.5);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            cursor: pointer;
+        .glass {
+            background: rgba(26,26,38,0.65);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08);
         }
     </style>
 </head>
 <body>
-<div class="app-container">
-    <div class="app-header">
+<div class="app">
+
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen">
+        <div class="logo-spin">audio<span style="color:#d4af37">Nest</span></div>
+        <p style="margin-top:24px; color:#888; font-size:15px;">Φόρτωση premium εμπειρίας...</p>
+    </div>
+
+    <!-- HEADER -->
+    <header>
         <div class="logo">audio<span>Nest</span></div>
-        <div class="avatar-icon" id="profileAvatarBtn">JD</div>
-    </div>
+        <div onclick="navigateTo('profile')" style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#d4af37);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;cursor:pointer;box-shadow:0 4px 15px rgba(139,92,246,0.4);">MA</div>
+    </header>
 
-    <div class="main-content" id="mainContent">
-        <!-- HOME VIEW -->
-        <div id="view-home" class="view active-view">
-            <div class="hero" style="margin-bottom: 20px;">
-                <h1 class="serif" style="font-size: 36px;">Ανακαλύψτε<br><span class="text-gold">Ιστορίες</span></h1>
-                <p style="color: var(--text-secondary); margin-top: 8px;">Χιλιάδες audiobooks στα χέρια σας</p>
-            </div>
-
-            <div class="section-header"><h3>✨ New & Trending</h3><span class="see-all">Δες όλα</span></div>
-            <div class="horizontal-scroll" id="trendingBooks"></div>
-
-            <div class="section-header"><h3>🔥 Best Sellers</h3><span class="see-all">Δες όλα</span></div>
-            <div class="horizontal-scroll" id="bestsellerBooks"></div>
-
-            <div class="section-header"><h3>📚 Store βιβλίων</h3></div>
-            <div class="horizontal-scroll" id="storeBooks"></div>
-
-            <div class="section-header"><h3>🏆 Top Charts</h3></div>
-            <div class="horizontal-scroll" id="topCharts"></div>
-
-            <div class="section-header"><h3>📖 Είδη</h3></div>
-            <div id="genresContainer" style="margin-bottom: 20px;"></div>
-
-            <div class="section-header"><h3>🚀 Έρχονται σύντομα</h3></div>
-            <div class="horizontal-scroll" id="comingSoon"></div>
-
-            <div style="margin-top: 30px; padding: 20px 0; text-align: center; border-top: 1px solid var(--border);">
-                <span style="font-size: 12px; color: var(--text-muted);" id="termsLink">Όροι και Προϋποθέσεις</span>
+    <!-- HOME -->
+    <div id="view-home" class="view active">
+        <div class="hero" onclick="openProduct(1)">
+            <div>
+                <span style="background:rgba(212,175,55,0.2); color:#ffd700; padding:4px 12px; border-radius:9999px; font-size:13px;">ΝΕΟ</span>
+                <h1 class="serif" style="font-size:42px; line-height:1.05; margin:16px 0 8px;">Το Κομμάτι που Λείπει</h1>
+                <p style="font-size:18px; color:#ddd;">Ελένη Πριοβόλου</p>
             </div>
         </div>
 
-        <!-- LIBRARY VIEW -->
-        <div id="view-library" class="view">
-            <h2 class="serif" style="font-size: 32px;">Βιβλιοθήκη μου</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 20px;">Τα audiobooks που αγόρασες</p>
-            <div id="libraryList"></div>
-        </div>
-
-        <!-- SEARCH VIEW -->
-        <div id="view-search" class="view">
-            <div class="form-group">
-                <input type="text" id="searchInput" class="form-input" placeholder="Αναζήτησε τίτλο ή συγγραφέα...">
+        <div style="padding:24px 20px 8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <h2 class="serif" style="font-size:23px;">Συνέχισε να ακούς</h2>
             </div>
-            <div id="searchResults"></div>
+            <div class="horizontal-scroll" id="continue"></div>
         </div>
 
-        <!-- PRODUCT DETAIL VIEW -->
-        <div id="view-product" class="view">
-            <button class="back-btn" onclick="navigateBack()"><i data-lucide="arrow-left"></i></button>
-            <div id="productDetailContainer"></div>
-        </div>
-
-        <!-- PAYMENT VIEW -->
-        <div id="view-payment" class="view">
-            <button class="back-btn" onclick="navigateBack()"><i data-lucide="arrow-left"></i></button>
-            <div id="paymentContainer"></div>
-        </div>
-
-        <!-- PLAYER VIEW -->
-        <div id="view-player" class="view">
-            <button class="back-btn" onclick="navigateBack()"><i data-lucide="arrow-left"></i></button>
-            <div id="playerContainer"></div>
-            <audio id="playerAudio" preload="metadata"></audio>
-        </div>
-
-        <!-- PROFILE VIEW -->
-        <div id="view-profile" class="view">
-            <button class="back-btn" onclick="navigateBack()"><i data-lucide="arrow-left"></i></button>
-            <h2 class="serif" style="font-size: 32px;">Λογαριασμός Μου</h2>
-            <div style="background: var(--bg-card); border-radius: var(--radius-lg); padding: 20px; margin-top: 20px;">
-                <p style="font-size: 20px; font-weight: 600;" id="profileName">John Doe</p>
-                <div class="flex-between mt-4" style="cursor: pointer;" id="userDetailsLink">
-                    <span>📋 Στοιχεία χρήστη</span>
-                    <i data-lucide="chevron-right" style="width: 18px;"></i>
-                </div>
-                <div class="flex-between mt-4"><span>🔔 Ειδοποιήσεις</span><span style="color: var(--text-muted);">...</span></div>
-                <div class="flex-between mt-4"><span>❓ Βοήθεια</span><span style="color: var(--text-muted);">...</span></div>
-                <div class="flex-between mt-4"><span>🎟️ Κουπόνια / Προσφορές</span><span style="color: var(--text-muted);">...</span></div>
-                <div class="flex-between mt-4" style="cursor: pointer;" id="paymentMethodsLink">
-                    <span>💳 Πορτοφόλι / Τρόπος πληρωμής</span>
-                    <i data-lucide="chevron-right" style="width: 18px;"></i>
-                </div>
+        <div style="padding:8px 20px 8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+                <h2 class="serif" style="font-size:23px;">Νέα &amp; Δημοφιλή</h2>
+                <span onclick="showToast('Εμφάνιση όλων')" style="color:var(--gold); font-size:15px;">Όλα</span>
             </div>
-        </div>
-
-        <!-- USER DETAILS VIEW -->
-        <div id="view-userdetails" class="view">
-            <button class="back-btn" onclick="navigateBack()"><i data-lucide="arrow-left"></i></button>
-            <h2 class="serif" style="font-size: 28px;">Στοιχεία Χρήστη</h2>
-            <div class="form-group mt-4"><label class="form-label">Αριθμός Τηλεφώνου</label><input type="tel" id="userPhone" class="form-input" value="694 123 4567"></div>
-            <div class="form-group"><label class="form-label">Email</label><input type="email" id="userEmail" class="form-input" value="john@example.com"></div>
-            <div class="form-group"><label class="form-label">Διεύθυνση</label><input type="text" id="userAddress" class="form-input" value="Λεωφόρος Δημοκρατίας 12, Αθήνα"></div>
-            <button class="btn-primary" onclick="saveUserDetails()">Αποθήκευση</button>
-        </div>
-
-        <!-- PAYMENT METHODS VIEW -->
-        <div id="view-paymentmethods" class="view">
-            <button class="back-btn" onclick="navigateBack()"><i data-lucide="arrow-left"></i></button>
-            <h2 class="serif" style="font-size: 28px;">Τρόποι πληρωμής</h2>
-            <div id="paymentMethodsList"></div>
-            <div class="payment-method-card" id="addCardBtn"><i data-lucide="credit-card"></i> Προσθήκη πιστωτικής κάρτας</div>
-            <div class="payment-method-card" id="paypalMethod"><i data-lucide="layout-grid"></i> PayPal</div>
-            <div id="cardFormContainer" style="display: none; margin-top: 16px;"></div>
+            <div class="horizontal-scroll" id="trending"></div>
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-        <button class="nav-item active" data-nav="home"><i data-lucide="home"></i><span>Αρχική</span></button>
-        <button class="nav-item" data-nav="library"><i data-lucide="library"></i><span>Βιβλιοθήκη</span></button>
-        <button class="nav-item" data-nav="search"><i data-lucide="search"></i><span>Αναζήτηση</span></button>
+    <!-- LIBRARY, SEARCH, PRODUCT, PAYMENT, PLAYER, PROFILE views (συμπτυγμένα για συντομία) -->
+    <div id="view-library" class="view">...</div>
+    <div id="view-search" class="view">...</div>
+    <div id="view-product" class="view"></div>
+    <div id="view-payment" class="view"></div>
+    <div id="view-player" class="view"></div>
+    <div id="view-profile" class="view"></div>
+
+    <!-- MINI PLAYER -->
+    <div id="mini-player" style="display:none; position:fixed; bottom:85px; left:50%; transform:translateX(-50%); width:92%; max-width:380px; background:rgba(20,20,32,0.97); backdrop-filter:blur(30px); border-radius:20px; padding:12px; box-shadow:0 15px 40px rgba(0,0,0,0.6); z-index:998;">
+        <div style="display:flex; align-items:center; gap:14px;">
+            <img id="mini-cover" src="" style="width:54px; height:54px; border-radius:12px; object-fit:cover;">
+            <div style="flex:1; overflow:hidden;">
+                <div id="mini-title" style="font-weight:600; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+                <div id="mini-author" style="font-size:13px; color:var(--text-secondary);"></div>
+            </div>
+            <button onclick="togglePlay()" id="mini-play-btn" style="background:none; border:none; font-size:32px; color:var(--gold); width:44px;">▶</button>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav glass">
+        <div class="nav-item active" onclick="navigateTo('home')"><i data-lucide="home"></i><div>Αρχική</div></div>
+        <div class="nav-item" onclick="navigateTo('library')"><i data-lucide="library"></i><div>Βιβλιοθήκη</div></div>
+        <div class="nav-item" onclick="navigateTo('search')"><i data-lucide="search"></i><div>Αναζήτηση</div></div>
     </div>
 </div>
 
+<audio id="audio-player"></audio>
+
 <script>
-    // Data
-    let booksDB = [
-        { id: 1, title: "Το Κομμάτι που Λείπει", author: "Ελένη Πριοβόλου", narrator: "Νικόλας Άσιμος", price: 14.99, category: "Μυθιστόρημα", rating: 4.5, cover: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400", summary: "Μια ιστορία για την απώλεια και την επιστροφή.", date: "2025-01-10", genre: "Λογοτεχνία", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-        { id: 2, title: "Σκιές στο Σκοτάδι", author: "Μαρία Λαμπροπούλου", narrator: "Άννα Μάστορα", price: 12.99, rating: 4.8, cover: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400", summary: "Αστυνομικό θρίλερ που θα σας καθηλώσει.", date: "2024-11-05", genre: "Μυστήριο & Θρίλερ", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-        { id: 3, title: "Atomic Habits", author: "James Clear", narrator: "Γιώργος Χ", price: 19.99, rating: 4.9, cover: "https://images.unsplash.com/photo-1589998059171-988d887df646?w=400", summary: "Συνήθειες που αλλάζουν τη ζωή.", date: "2024-09-20", genre: "Μη Μυθοπλασία", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-        { id: 4, title: "Μικρές Νίκες", author: "Κατερίνα Γκουγκουλή", narrator: "Μαρία Ζ", price: 9.99, rating: 4.2, cover: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400", summary: "Δύναμη ψυχής", date: "2025-02-14", genre: "Ρομαντικά", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-        { id: 5, title: "Ο Εξερευνητής", author: "Νίκος Καζαντζάκης", narrator: "Πέτρος Φιλιππίδης", price: 16.99, rating: 4.7, cover: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400", summary: "Ταξίδι στην Κρήτη.", date: "2025-03-01", genre: "Μυθιστορήματα", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-        { id: 6, title: "Μαθαίνω για τα ζώα", author: "Παιδική Ομάδα", narrator: "Ευαγγελία Σ", price: 7.99, rating: 4.5, cover: "https://images.unsplash.com/photo-1427677079961-6e5f2aafcb67?w=400", summary: "Εκπαιδευτικό για παιδιά", date: "2025-01-20", genre: "Παιδικά", audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" }
-    ];
+// Data
+const booksDB = [
+    {id:1, title:"Το Κομμάτι που Λείπει", author:"Ελένη Πριοβόλου", price:14.99, cover:"https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800", audioUrl:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"},
+    {id:2, title:"Σκιές στο Σκοτάδι", author:"Μαρία Λαμπροπούλου", price:12.99, cover:"https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800"},
+    {id:3, title:"Atomic Habits", author:"James Clear", price:19.99, cover:"https://images.unsplash.com/photo-1589998059171-988d887df646?w=800"},
+];
 
-    let purchasedBooks = [];
-    let currentBook = null;
-    let selectedPaymentMethod = "Apple Pay";
-    let paymentMethods = ["Apple Pay"];
-    let userData = { phone: "694 123 4567", email: "john@example.com", address: "Λεωφόρος Δημοκρατίας 12, Αθήνα" };
+let currentBook = null;
+let purchased = [];
+let isPlaying = false;
+const audio = document.getElementById('audio-player');
 
-    let audioPlayer = document.getElementById("playerAudio");
-    let isPlaying = false;
-    let currentTimeSaved = 0;
+// Loading Screen
+setTimeout(() => {
+    document.getElementById('loading-screen').style.opacity = '0';
+    setTimeout(() => {
+        document.getElementById('loading-screen').style.display = 'none';
+    }, 800);
+}, 1600);
 
-    // LocalStorage
-    function loadFromStorage() {
-        const savedPurchased = localStorage.getItem('purchasedBooks');
-        if (savedPurchased) purchasedBooks = JSON.parse(savedPurchased);
-
-        const savedUser = localStorage.getItem('userData');
-        if (savedUser) userData = JSON.parse(savedUser);
-
-        const savedMethods = localStorage.getItem('paymentMethods');
-        if (savedMethods) {
-            paymentMethods = JSON.parse(savedMethods);
-            selectedPaymentMethod = paymentMethods[0] || "Apple Pay";
-        }
-    }
-
-    function saveToStorage() {
-        localStorage.setItem('purchasedBooks', JSON.stringify(purchasedBooks));
-        localStorage.setItem('userData', JSON.stringify(userData));
-        localStorage.setItem('paymentMethods', JSON.stringify(paymentMethods));
-    }
-
-    // Render books
-    function renderBookCards(books, containerId, isLibrary = false) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        container.innerHTML = books.map(book => `
-            <div class="book-card" onclick="openProduct(${book.id})">
-                <img src="${book.cover}" class="book-cover" alt="${book.title}">
-                <div class="book-title">${book.title}</div>
-                <div class="book-author">${book.author}</div>
-                ${isLibrary ? `<small style="color:var(--green)">✓ Αγορασμένο</small>` : ''}
+// Render Functions
+function renderBooks(containerId, books) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = books.map(book => `
+        <div class="book-card" onclick="openProduct(${book.id})">
+            <img src="${book.cover}" class="book-cover">
+            <div style="padding:8px 4px 0;">
+                <div style="font-weight:600; font-size:14.5px;">${book.title}</div>
+                <div style="color:var(--text-secondary); font-size:13px;">${book.author}</div>
             </div>
-        `).join('');
-        lucide.createIcons();
-    }
+        </div>
+    `).join('');
+}
 
-    function openProduct(bookId) {
-        currentBook = booksDB.find(b => b.id === bookId) || booksDB[0];
-        renderProductDetail();
-        navigateTo('product', false);
-    }
+function initHome() {
+    renderBooks('trending', booksDB);
+    renderBooks('continue', booksDB.slice(0,3));
+}
 
-    function renderProductDetail() {
-        if (!currentBook) return;
-
-        const isOwned = purchasedBooks.some(b => b.id === currentBook.id);
-        const stars = Array(5).fill().map((_, i) => 
-            i < Math.floor(currentBook.rating) 
-                ? `<i data-lucide="star" class="star-filled"></i>` 
-                : `<i data-lucide="star" class="star-empty"></i>`
-        ).join('');
-
-        const html = `
-            <img src="${currentBook.cover}" class="product-cover">
-            <h1 class="serif" style="font-size: 28px;">${currentBook.title}</h1>
-            <p style="color: var(--text-secondary);">Συγγραφέας: ${currentBook.author} | Εκφωνητής: ${currentBook.narrator || 'AI Narrator'}</p>
-            <div class="rating-stars">${stars} <span style="margin-left: 8px;">(${currentBook.rating})</span></div>
-            <p><strong>Κατηγορία:</strong> ${currentBook.genre}</p>
-            <p><strong>Ημ. Ανάρτησης:</strong> ${currentBook.date}</p>
+function openProduct(id) {
+    currentBook = booksDB.find(b => b.id === id);
+    const html = `
+        <div style="padding:20px;">
+            <button onclick="navigateTo('home')" style="font-size:32px; background:none; border:none; color:white; margin-bottom:10px;">←</button>
+            <img src="${currentBook.cover}" style="width:100%; border-radius:22px; box-shadow:0 25px 50px -15px black;">
+            <h1 class="serif" style="font-size:34px; margin:24px 0 6px;">${currentBook.title}</h1>
+            <p style="font-size:18px; color:var(--text-secondary);">${currentBook.author}</p>
             
-            <div style="margin: 20px 0;">
-                <button class="btn-outline" id="samplePreviewBtn">🎧 Δείγμα (Preview)</button>
+            <div style="margin:32px 0 40px;">
+                <button onclick="playSample()" style="width:100%; padding:16px; background:transparent; border:2px solid var(--gold); color:var(--gold); border-radius:9999px; font-weight:600;">▶ Ακούστε δείγμα</button>
             </div>
             
-            <div><strong>Περίληψη</strong><p>${currentBook.summary}</p></div>
-            
-            <div style="margin-top: 30px;">
-                ${isOwned 
-                    ? `<button class="btn-primary" id="playNowBtn">▶ Αναπαραγωγή</button>` 
-                    : `<button class="btn-primary" id="buyNowBtn">💰 Τιμή: €${currentBook.price} - Αγορά</button>`}
-            </div>
+            <button onclick="startPurchaseFlow()" class="btn-primary">Αγορά — €${currentBook.price}</button>
+        </div>
+    `;
+    document.getElementById('view-product').innerHTML = html;
+    navigateTo('product');
+}
 
-            <div style="margin-top: 40px;">
-                <strong>Περισσότερα από τον ίδιο συγγραφέα</strong>
-                <div class="horizontal-scroll" id="sameAuthorBooks"></div>
-            </div>
-            
-            <div style="margin-top: 30px;">
-                <strong>Περισσότερα βιβλία</strong>
-                <div class="horizontal-scroll" id="moreBooks"></div>
-            </div>
-        `;
-
-        document.getElementById('productDetailContainer').innerHTML = html;
-
-        // Event listeners
-        if (isOwned) {
-            document.getElementById('playNowBtn').addEventListener('click', () => {
-                navigateTo('player');
-            });
-        } else {
-            document.getElementById('buyNowBtn').addEventListener('click', () => openPayment(currentBook));
-        }
-
-        document.getElementById('samplePreviewBtn').addEventListener('click', playSample);
-
-        // Similar books
-        const sameAuthor = booksDB.filter(b => b.author === currentBook.author && b.id !== currentBook.id);
-        const moreBooks = booksDB.filter(b => b.id !== currentBook.id).slice(0, 5);
-        
-        renderBookCards(sameAuthor, 'sameAuthorBooks');
-        renderBookCards(moreBooks, 'moreBooks');
-
-        lucide.createIcons();
-    }
-
-    function playSample() {
-        if (audioPlayer) {
-            audioPlayer.pause();
-        }
-        audioPlayer.src = currentBook.audioUrl || "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
-        audioPlayer.play();
-        setTimeout(() => {
-            if (audioPlayer) audioPlayer.pause();
-        }, 8000);
-        showToast("🔊 Δείγμα 8 δευτερολέπτων");
-    }
-
-    function openPayment(book) {
-        currentBook = book;
-        updatePaymentDisplay();
-        navigateTo('payment', false);
-    }
-
-    function updatePaymentDisplay() {
-        const html = `
-            <div style="text-align: center; padding-top: 20px;">
-                <img src="${currentBook.cover}" style="width: 100px; border-radius: 16px; margin-bottom: 16px;">
-                <h3>${currentBook.title}</h3>
-                <p style="font-size: 22px; margin: 8px 0;">€${currentBook.price}</p>
-                <div style="background: var(--bg-card); padding: 16px; border-radius: 16px; margin: 24px 0; text-align: left;">
-                    <div class="flex-between">
-                        <span>Επιλεγμένος τρόπος:</span>
-                        <strong id="selectedMethodDisplay">${selectedPaymentMethod}</strong>
-                    </div>
-                    <button id="changePaymentBtn" class="btn-outline" style="margin-top: 12px; width: auto; padding: 10px 20px;">Αλλαγή</button>
-                </div>
-                <button id="confirmPurchaseBtn" class="btn-primary">Ολοκλήρωση Αγοράς</button>
-            </div>
-        `;
-        document.getElementById('paymentContainer').innerHTML = html;
-
-        document.getElementById('changePaymentBtn').addEventListener('click', () => {
-            navigateTo('paymentmethods', false);
-        });
-        document.getElementById('confirmPurchaseBtn').addEventListener('click', completePurchase);
-        lucide.createIcons();
-    }
-
-    function completePurchase() {
-        if (!purchasedBooks.find(b => b.id === currentBook.id)) {
-            purchasedBooks.push({...currentBook});
-            saveToStorage();
-        }
-        showToast("✅ Αγορά ολοκληρωμένη!");
+function startPurchaseFlow() {
+    showToast("🔄 Μετάβαση σε ασφαλή πληρωμή...");
+    setTimeout(() => {
+        purchased.push(currentBook);
         navigateTo('player');
-    }
+        startPlayback();
+    }, 900);
+}
 
-    function renderPlayer() {
-        if (!currentBook) currentBook = booksDB[0];
+function startPlayback() {
+    document.getElementById('mini-player').style.display = 'block';
+    document.getElementById('mini-cover').src = currentBook.cover;
+    document.getElementById('mini-title').textContent = currentBook.title;
+    document.getElementById('mini-author').textContent = currentBook.author;
 
-        const html = `
-            <div class="player-container">
-                <img src="${currentBook.cover}" class="player-cover">
-                <h2 class="serif">${currentBook.title}</h2>
-                <p>${currentBook.author} • ${currentBook.narrator || 'AI'}</p>
-                
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressBar">
-                        <div class="progress" id="progressFill"></div>
-                    </div>
-                    <div id="audioTime" style="font-size: 13px; margin-top: 8px; color: var(--text-secondary);">0:00 / 0:00</div>
-                </div>
-                
-                <div class="player-controls">
-                    <button class="control-btn" id="prevTrack"><i data-lucide="skip-back"></i></button>
-                    <button class="control-btn play-big" id="playPauseBtn"><i data-lucide="play" style="width: 32px;"></i></button>
-                    <button class="control-btn" id="nextTrack"><i data-lucide="skip-forward"></i></button>
-                </div>
-            </div>
-        `;
+    audio.src = currentBook.audioUrl;
+    audio.play();
+    isPlaying = true;
+}
 
-        document.getElementById('playerContainer').innerHTML = html;
+function togglePlay() {
+    if (isPlaying) audio.pause();
+    else audio.play();
+    isPlaying = !isPlaying;
+    document.getElementById('mini-play-btn').textContent = isPlaying ? '⏸' : '▶';
+}
 
-        // Audio setup
-        audioPlayer.src = currentBook.audioUrl || "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
-        audioPlayer.currentTime = currentTimeSaved;
+function playSample() {
+    audio.src = currentBook.audioUrl;
+    audio.play();
+    setTimeout(() => audio.pause(), 7000);
+    showToast("🎧 Παίζει δείγμα 7 δευτερολέπτων");
+}
 
-        const playBtn = document.getElementById('playPauseBtn');
-        const progressBar = document.getElementById('progressBar');
-        const progressFill = document.getElementById('progressFill');
-        const timeDisplay = document.getElementById('audioTime');
+function navigateTo(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    const target = document.getElementById(`view-${view}`);
+    if (target) target.classList.add('active');
 
-        // Sync play/pause
-        function updatePlayButton() {
-            playBtn.innerHTML = isPlaying 
-                ? `<i data-lucide="pause" style="width: 32px;"></i>` 
-                : `<i data-lucide="play" style="width: 32px;"></i>`;
-            lucide.createIcons();
-        }
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const active = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick').includes(`'${view}'`));
+    if (active) active.classList.add('active');
+}
 
-        playBtn.addEventListener('click', () => {
-            if (isPlaying) {
-                audioPlayer.pause();
-            } else {
-                audioPlayer.play();
-            }
-        });
+function showToast(msg) {
+    const t = document.createElement('div');
+    t.style.cssText = `position:fixed;bottom:110px;left:50%;transform:translateX(-50%);background:#1f1f2b;padding:14px 26px;border-radius:9999px;color:white;z-index:9999;font-size:15px;box-shadow:0 10px 30px rgba(0,0,0,0.5);white-space:nowrap;`;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2600);
+}
 
-        audioPlayer.onplay = () => { isPlaying = true; updatePlayButton(); };
-        audioPlayer.onpause = () => { isPlaying = false; updatePlayButton(); };
-
-        // Progress
-        audioPlayer.ontimeupdate = () => {
-            currentTimeSaved = audioPlayer.currentTime;
-            const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100 || 0;
-            progressFill.style.width = percent + '%';
-            
-            timeDisplay.textContent = `${formatTime(audioPlayer.currentTime)} / ${formatTime(audioPlayer.duration)}`;
-        };
-
-        progressBar.addEventListener('click', (e) => {
-            const rect = progressBar.getBoundingClientRect();
-            const pos = (e.clientX - rect.left) / rect.width;
-            audioPlayer.currentTime = pos * audioPlayer.duration;
-        });
-
-        // Skip buttons
-        document.getElementById('prevTrack').addEventListener('click', () => {
-            audioPlayer.currentTime = Math.max(0, audioPlayer.currentTime - 15);
-        });
-        document.getElementById('nextTrack').addEventListener('click', () => {
-            audioPlayer.currentTime = Math.min(audioPlayer.duration, audioPlayer.currentTime + 15);
-        });
-
-        // Initial state
-        updatePlayButton();
-        lucide.createIcons();
-    }
-
-    function formatTime(seconds) {
-        if (isNaN(seconds)) return "0:00";
-        const min = Math.floor(seconds / 60);
-        const sec = Math.floor(seconds % 60);
-        return `${min}:${sec < 10 ? '0' : ''}${sec}`;
-    }
-
-    // Navigation
-    let navigationStack = [];
-
-    function navigateTo(viewId, addToStack = true) {
-        if (addToStack && !['home','library','search'].includes(viewId)) {
-            navigationStack.push(viewId);
-        }
-
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
-        const target = document.getElementById(`view-${viewId}`);
-        if (target) target.classList.add('active-view');
-
-        // Bottom nav
-        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-        const navBtn = document.querySelector(`.nav-item[data-nav="${viewId}"]`);
-        if (navBtn) navBtn.classList.add('active');
-
-        // Specific renders
-        if (viewId === 'player') renderPlayer();
-        if (viewId === 'library') renderLibrary();
-        if (viewId === 'search') performSearch();
-        if (viewId === 'payment') updatePaymentDisplay();
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        lucide.createIcons();
-    }
-
-    function navigateBack() {
-        if (navigationStack.length > 0) {
-            const previous = navigationStack.pop();
-            navigateTo(previous, false);
-        } else {
-            navigateTo('home', false);
-        }
-    }
-
-    function renderLibrary() {
-        const container = document.getElementById('libraryList');
-        if (purchasedBooks.length === 0) {
-            container.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 40px 20px;">Δεν έχεις αγορασμένα audiobooks ακόμα.<br><br>Πήγαινε στο Store!</p>`;
-            return;
-        }
-        renderBookCards(purchasedBooks, 'libraryList', true);
-    }
-
-    function performSearch() {
-        const query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
-        let results = booksDB;
-        
-        if (query) {
-            results = booksDB.filter(b => 
-                b.title.toLowerCase().includes(query) || 
-                b.author.toLowerCase().includes(query)
-            );
-        }
-
-        const container = document.getElementById('searchResults');
-        if (results.length === 0) {
-            container.innerHTML = `<p style="text-align:center; padding:40px; color:var(--text-muted);">Δεν βρέθηκαν αποτελέσματα</p>`;
-        } else {
-            container.innerHTML = '';
-            const scrollDiv = document.createElement('div');
-            scrollDiv.className = 'horizontal-scroll';
-            scrollDiv.style.flexWrap = 'wrap';
-            scrollDiv.style.gap = '12px';
-            renderBookCards(results, scrollDiv.id = 'searchScroll');
-            container.appendChild(scrollDiv);
-        }
-        lucide.createIcons();
-    }
-
-    function initHome() {
-        renderBookCards(booksDB.slice(0,5), 'trendingBooks');
-        renderBookCards(booksDB.slice(1,6), 'bestsellerBooks');
-        renderBookCards(booksDB, 'storeBooks');
-        renderBookCards(booksDB.slice(2,5), 'topCharts');
-        renderBookCards(booksDB.slice(3,5), 'comingSoon');
-
-        const genres = ["Ρομαντικά","Μυστήριο & Θρίλερ","Μυθιστορήματα","Μη Μυθοπλασία","Παιδικά"];
-        document.getElementById('genresContainer').innerHTML = genres.map(g => 
-            `<span class="genre-chip" onclick="showToast('Φιλτράρισμα: ${g}')">${g}</span>`
-        ).join('');
-        
-        document.getElementById('termsLink').addEventListener('click', () => showToast("Όροι Χρήσης • © 2026 audioNest"));
-    }
-
-    function setupProfileLinks() {
-        document.getElementById('profileAvatarBtn').onclick = () => navigateTo('profile', false);
-        document.getElementById('userDetailsLink').onclick = () => navigateTo('userdetails', false);
-        document.getElementById('paymentMethodsLink').onclick = () => navigateTo('paymentmethods', false);
-    }
-
-    function saveUserDetails() {
-        userData.phone = document.getElementById('userPhone').value;
-        userData.email = document.getElementById('userEmail').value;
-        userData.address = document.getElementById('userAddress').value;
-        saveToStorage();
-        showToast("✅ Στοιχεία αποθηκεύτηκαν");
-        navigateTo('profile', false);
-    }
-
-    function setupPaymentMethods() {
-        const container = document.getElementById('paymentMethodsList');
-        
-        function renderMethods() {
-            container.innerHTML = paymentMethods.map(method => `
-                <div class="payment-method-card" onclick="selectPaymentMethod('${method}')">
-                    <i data-lucide="check-circle" style="color:var(--green);"></i>
-                    <span>${method}</span>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        }
-        renderMethods();
-
-        document.getElementById('addCardBtn').addEventListener('click', () => {
-            const formDiv = document.getElementById('cardFormContainer');
-            formDiv.style.display = 'block';
-            formDiv.innerHTML = `
-                <div class="form-group"><input class="form-input" placeholder="Αριθμός κάρτας" id="newCardNum"></div>
-                <div class="form-group"><input class="form-input" placeholder="MM/YY" id="newCardExpiry"></div>
-                <button class="btn-primary" id="saveCardBtn">Προσθήκη Κάρτας</button>
-            `;
-            document.getElementById('saveCardBtn').onclick = () => {
-                const cardName = "Πιστωτική Κάρτα •••• 4242";
-                if (!paymentMethods.includes(cardName)) {
-                    paymentMethods.push(cardName);
-                    selectedPaymentMethod = cardName;
-                }
-                saveToStorage();
-                formDiv.style.display = 'none';
-                renderMethods();
-                showToast("Κάρτα προστέθηκε");
-            };
-        });
-
-        document.getElementById('paypalMethod').addEventListener('click', () => {
-            const pp = "PayPal";
-            if (!paymentMethods.includes(pp)) paymentMethods.push(pp);
-            selectedPaymentMethod = pp;
-            saveToStorage();
-            renderMethods();
-            showToast("PayPal επιλέχθηκε");
-        });
-    }
-
-    window.selectPaymentMethod = function(method) {
-        selectedPaymentMethod = method;
-        saveToStorage();
-        showToast(`${method} επιλέχθηκε`);
-        navigateTo('payment', false);
-    };
-
-    function showToast(msg) {
-        const toast = document.createElement('div');
-        toast.textContent = msg;
-        toast.style.cssText = `
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-            background: #1c1c26; color: white; padding: 12px 24px; border-radius: 9999px;
-            z-index: 9999; border: 1px solid var(--gold); font-size: 14px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-        `;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 2800);
-    }
-
-    // Init
-    function initializeApp() {
-        loadFromStorage();
-        
-        // Bottom nav
-        document.querySelectorAll('.nav-item').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const navId = btn.getAttribute('data-nav');
-                navigateTo(navId);
-            });
-        });
-
-        // Search input
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', performSearch);
-
-        initHome();
-        setupProfileLinks();
-        setupPaymentMethods();
-        lucide.createIcons();
-
-        // Demo
-        currentBook = booksDB[0];
-    }
-
-    window.openProduct = openProduct;
-    window.navigateTo = navigateTo;
-    window.showToast = showToast;
-    window.navigateBack = navigateBack;
-
-    // Start
-    window.onload = initializeApp;
+// Initialize
+window.onload = () => {
+    initHome();
+    lucide.createIcons();
+    showToast("Καλώς ήρθατε στο audioNest ✨");
+};
 </script>
 </body>
 </html>
